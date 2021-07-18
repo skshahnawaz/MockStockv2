@@ -1,0 +1,57 @@
+<ul class="nav nav-tabs nav-fill mb-3" id="<%= quote.id %>" role="tablist">
+    <li class="nav-item ms-0" role="presentation">
+        <a class="nav-link active" id="<%= quote.id %>-tab-1" data-mdb-toggle="tab" href="#<%= quote.id %>-tabs-1"
+            role="tab" aria-controls="<%= quote.id %>-tabs-1" aria-selected="true">Profile</a>
+    </li>
+    <li class="nav-item" role="presentation">
+        <a class="nav-link" id="<%= quote.id %>-tab-2" data-mdb-toggle="tab" href="#<%= quote.id %>-tabs-2" role="tab"
+            aria-controls="<%= quote.id %>-tabs-2" aria-selected="true">Follow</a>
+    </li>
+    <li class="nav-item" role="presentation">
+        <a class="nav-link" id="<%= quote.id %>-tab-3" data-mdb-toggle="tab" href="#<%= quote.id %>-tabs-3" role="tab"
+            aria-controls="<%= quote.id %>-tabs-3" aria-selected="true">Contact</a>
+    </li>
+</ul>
+
+
+<div class="card-body">
+    <div class="tab-content" id="<%= quote.id %>-content">
+        <div class="tab-pane fade show active" id="<%= quote.id %>-tabs-1" role="tabpanel"
+            aria-labelledby="<%= quote.id %>-tabs-1">
+            <canvas id="line-chart" height="250px"></canvas>
+        </div>
+        <div class="tab-pane fade" id="<%= quote.id %>-tabs-2" role="tabpanel" aria-labelledby="<%= quote.id %>-tabs-2">
+            <p align="justify" class="font-small text-muted mx-1">
+                Lorem ipsum dolor sit amet, consectetur adipisicing elit. Nihil odit
+                magnam
+                minima, soluta doloribus reiciendis molestiae placeat unde eos
+                molestias.
+                Quisquam aperiam, pariatur. Tempora, placeat ratione porro voluptate
+                odit
+                minima.
+            </p>
+            <p align="justify" class="font-small text-muted mx-1">
+                Lorem ipsum dolor sit amet, consectetur adipisicing elit. Nihil odit
+                magnam
+                minima, soluta doloribus reiciendis molestiae placeat unde eos
+                molestias.
+                Quisquam aperiam, pariatur. Tempora, placeat ratione porro voluptate
+                odit
+                minima.
+            </p>
+        </div>
+        <div class="tab-pane fade" id="<%= quote.id %>-tabs-3" role="tabpanel" aria-labelledby="<%= quote.id %>-tabs-3">
+            <img class="img-fluid z-depth-1 rounded mb-3" alt="sample image"
+                src="https://mdbootstrap.com/img/Photos/Others/intro1.jpg" />
+            <p align="justify" class="font-small text-muted mx-1">
+                Lorem ipsum dolor sit amet, consectetur adipisicing elit. Nihil odit
+                magnam
+                minima, soluta doloribus reiciendis molestiae placeat unde eos
+                molestias.
+                Quisquam aperiam, pariatur. Tempora, placeat ratione porro voluptate
+                odit minima
+                at ipsum sit amet.
+            </p>
+        </div>
+    </div>
+</div>

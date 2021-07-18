@@ -1,0 +1,21 @@
+{
+  "name": "mockstock2",
+  "version": "1.0.0",
+  "description": "MockStock 2.0",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node index.js"
+  },
+  "author": "Sk Shahnawaz",
+  "license": "ISC",
+  "dependencies": {
+    "apexcharts": "^3.27.2",
+    "ejs": "^3.1.6",
+    "express": "^4.17.1",
+    "moment": "^2.29.1",
+    "toastify-js": "^1.11.1",
+    "uuid": "^8.3.2",
+    "yahoo-finance2": "^1.14.0"
+  }
+}
