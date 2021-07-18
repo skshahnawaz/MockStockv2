@@ -59,6 +59,6 @@ app.get("/", async function (req, res) {
 //   res.render("pages/about");
 // });
 
-const port = 3001 || process.env.PORT;
+const port = 8080 || process.env.PORT;
 app.listen(port);
 console.log(`Server is listening on port ${port}`);
