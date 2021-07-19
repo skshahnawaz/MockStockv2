@@ -14,6 +14,7 @@
                 border-color: #673ab7;
             }
         </style>
+
 </head>
 
 <body class="container">
@@ -42,20 +43,22 @@
                             <!-- <section class="mx-auto my-5" style="max-width: 23rem;"> -->
                             <div class="card chart-card" style="max-width: 23rem;">
                                 <div class="card-body pb-0">
-                                    <h5 class="card-title font-weight-bold">
+                                    <h5 class="card-title font-weight-bold" id="<%= quote.id %>-quoteName">
                                         <%= quote.name %>
                                     </h5>
                                     <p class="card-text mb-4">
-                                        <%= quote.symbol %> • &#8377; • NSE • <span
-                                                class="text-<%= quote.badgeClassName %> align-self-end">
-                                                <%= quote.marketPriceChange> 0 ? "+" +
-                                                    quote.marketPriceChange :
-                                                    quote.marketPriceChange %>
-                                            </span>
+                                        <span id="<%= quote.id %>-quoteSymbol">
+                                            <%= quote.symbol %>
+                                        </span> • &#8377; • NSE • <span
+                                            class="text-<%= quote.badgeClassName %> align-self-end">
+                                            <%= quote.marketPriceChange> 0 ? "+" +
+                                                quote.marketPriceChange :
+                                                quote.marketPriceChange %>
+                                        </span>
 
                                     </p>
                                     <div class="d-flex justify-content-between">
-                                        <p class="display-4 align-self-end">
+                                        <p class="display-4 align-self-end" id="<%= quote.id %>-marketPrice">
                                             <%= quote.marketPrice %>
                                         </p>
                                         <h5 class="align-self-end pb-2">
@@ -66,23 +69,35 @@
 
                                         </h5>
 
-
                                     </div>
 
 
                                     <div class="card-body d-flex justify-content-between">
                                         <div class="btn-group btn-group-sm" role="group" aria-label="Transact">
-                                            <button type="button" class="btn btn-success">Buy</button>
-                                            <button type="button" class="btn btn-danger">Sell</button>
+                                            <button type="button" id="<%= quote.id %>-buy" class="btn btn-success"
+                                                onClick='reply_click(this.id, "buy")'>Buy</button>
+                                            <button type="button" id="<%= quote.id %>-sell" class="btn btn-danger"
+                                                onClick='reply_click(this.id, "sell")'>Sell</button>
+
+
                                         </div>
-                                        <button type="button" onclick="notify();" class="btn btn-outline-primary btn-sm"
-                                            data-mdb-ripple-color="dark">
-                                            + More Info
+                                        <!-- <button type="button" onclick="notify('Stock Info to be triggered', 'info');"
+                                            class="btn btn-outline-primary btn-sm" data-mdb-ripple-color="dark">
+                                            Explore
+                                        </button> -->
+
+                                        <button type="button" class="btn btn-primary btn-sm"
+                                            id="<%= quote.id %>-modalLaunch" data-mdb-toggle="modal"
+                                            data-mdb-target="#orderFormModal">
+                                            Place Order
                                         </button>
 
                                         <!-- Collapsed content -->
 
                                     </div>
+
+
+
 
                                     <!-- <hr> -->
 
@@ -121,6 +136,18 @@
                     </li>
                 </ul>
             </nav> -->
+
+
+            <!-- Modal starts -->
+
+            <!-- Button trigger modal -->
+            <!-- <button type="button" class="btn btn-primary" data-mdb-toggle="modal" data-mdb-target="#staticBackdrop">
+                Launch static backdrop modal
+            </button> -->
+
+            <!-- Modal -->
+
+            <!-- Modal ends -->
         </div>
     </main>
     <!--Main layout-->
@@ -130,17 +157,26 @@
     </footer>
 
     <script type="text/javascript">
-        function notify() {
+        function notify(displayText, type) {
+            var color;
+            color = type == "sell" ? "red" : "green";
+            if (type == "info") {
+                color = "blue";
+            }
+            else if (type == "queue") {
+                color = "linear-gradient(to right, #00b09b, #96c93d)";
+            }
             Toastify({
-                text: "Transaction executed",
+                text: displayText,
                 duration: 3000,
-                destination: "https://github.com/apvarun/toastify-js",
+                destination: "https://github.com/skshahnawaz",
                 newWindow: true,
                 className: "info",
                 close: true,
-                gravity: "bottom", // `top` or `bottom`
+                gravity: "top", // `top` or `bottom`
                 position: "right", // `left`, `center` or `right`
-                backgroundColor: "linear-gradient(to right, #00b09b, #96c93d)",
+                // backgroundColor: "linear-gradient(to right, #00b09b, #96c93d)",
+                backgroundColor: color,
                 stopOnFocus: true, // Prevents dismissing of toast on hover
                 onClick: function () { } // Callback after click
             }).showToast();

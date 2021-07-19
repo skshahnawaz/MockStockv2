@@ -45,4 +45,65 @@
 <!-- MDB -->
 <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mdb-ui-kit/3.6.0/mdb.min.js"></script>
 <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/toastify-js"></script>
-<script src="https://cdn.jsdelivr.net/npm/apexcharts"></script>
+<script src="https://code.jquery.com/jquery-3.5.0.js"></script>
+
+<script src="/socket.io/socket.io.js"></script>
+<script>
+    $(document).ready(function () {
+        var socket = io();
+
+        // $("#add_status").click(function () {
+        //     socket.emit('status added', $("#comment").val());
+        // });
+        // socket.on("refresh feed", function (msg) {
+        //     $("#tick_messages1").text(msg.data);
+        // });
+
+        socket.on("update prices", function (quotes) {
+
+            quotes.quoteList.forEach(quote => {
+                var elementID = quote.quoteSymbol.concat("-marketPrice");
+                document.getElementById(elementID).innerText = quote.quotePrice;
+            });
+
+        });
+
+        socket.on("transaction successful", (transaction) => {
+            const { id, type, symbol, name, atPrice } = transaction;
+            const transactionMessage = "Transaction successful : " + id + " - " + type +
+                " " +
+                name +
+                "(" +
+                symbol +
+                ") at " +
+                atPrice;
+            notify(transactionMessage, type);
+        });
+
+    });
+</script>
+
+<script type="text/javascript">
+    function reply_click(clicked_id, action) {
+        var socket = io();
+        var quoteSymbol = clicked_id.substring(0, clicked_id.indexOf("-"))
+        var priceElement = quoteSymbol.concat("-marketPrice");
+        var quoteNameElement = quoteSymbol.concat("-quoteName");
+        var price = document.getElementById(priceElement).innerText;
+        var quoteName = document.getElementById(quoteNameElement).innerText;
+        const transactionQueueMessage = "Transaction queued : " + action +
+            " " +
+            quoteName +
+            "(" +
+            quoteSymbol +
+            ") at " +
+            price;
+        notify(transactionQueueMessage, "queue");
+        socket.emit("transact", { type: action, symbol: quoteSymbol, name: quoteName, atPrice: price });
+        // $("#modalLaunch").click();
+        // alert(price);
+        // alert(action + " " + quoteName + " at " + price);
+        // notify(action.concat(" ").concat(quoteName).concat(" at ").concat(price));
+        // alert(quoteName);
+    }
+</script>
