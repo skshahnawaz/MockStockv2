@@ -47,6 +47,7 @@
 <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/toastify-js"></script>
 <script src="https://code.jquery.com/jquery-3.5.0.js"></script>
 
+
 <script src="/socket.io/socket.io.js"></script>
 <script>
     $(document).ready(function () {
@@ -62,22 +63,145 @@
         socket.on("update prices", function (quotes) {
 
             quotes.quoteList.forEach(quote => {
-                var elementID = quote.quoteSymbol.concat("-marketPrice");
-                document.getElementById(elementID).innerText = quote.quotePrice;
+                var marketPriceElementID = quote.symbol.concat("-marketPrice");
+                var marketPriceChangeElementID = quote.symbol.concat("-marketPriceChange");
+                var marketPriceChangePercentArrowElementID = quote.symbol.concat("-marketPriceChangePercentArrow");
+                var marketPriceChangePercentElementID = quote.symbol.concat("-marketPriceChangePercent");
+                var marketPriceChangePercentBadgeElementID = quote.symbol.concat("-marketPriceChangePercentBadge");
+
+                var change = quote.marketPriceChange > 0 ? "+" +
+                    quote.marketPriceChange :
+                    quote.marketPriceChange;
+
+                document.getElementById(marketPriceElementID).innerText = quote.marketPrice;
+                document.getElementById(marketPriceChangeElementID).innerText = change;
+                document.getElementById(marketPriceChangeElementID).className = "text-" + quote.badgeClassName;
+                document.getElementById(marketPriceChangePercentArrowElementID).className = "fas fa-arrow-" + quote.arrowType;
+                document.getElementById(marketPriceChangePercentElementID).innerText = quote.marketPriceChangePercent + "%";
+                document.getElementById(marketPriceChangePercentBadgeElementID).className = "badge bg-" + quote.badgeClassName;
             });
 
         });
 
         socket.on("transaction successful", (transaction) => {
-            const { id, type, symbol, name, atPrice } = transaction;
-            const transactionMessage = "Transaction successful : " + id + " - " + type +
+            const { id, ttype, symbol, name, atPrice } = transaction;
+            const transactionMessage = "Transaction successful : " + id + " - " + ttype +
                 " " +
                 name +
                 "(" +
                 symbol +
                 ") at " +
                 atPrice;
-            notify(transactionMessage, type);
+            notify(transactionMessage, ttype);
+            document.getElementById(id + "-orderStatusBadge").classList.remove('bg-warning');
+            document.getElementById(id + "-orderStatusBadge").classList.add('bg-success');
+            document.getElementById(id + "-orderStatusBadge").innerText = "Complete";
+            document.getElementById(id + "-orderID").innerText = id;
+        });
+
+        socket.on("transaction queued", (transaction) => {
+            const { id, ttype, symbol, name, quantity, lotSize, mode, atPrice, otype } = transaction;
+            const transactionMessage = "Order submitted to exchange : " + id + " - " + ttype +
+                " " +
+                name +
+                "(" +
+                symbol +
+                ") at " +
+                atPrice;
+            notify(transactionMessage, "queue");
+
+            let orderTypeBadge = otype == "market" ? "<span class='badge bg-primary'>M</span>" : "<span class='badge bg-secondary'>L</span>";
+            let transactionTypeBadge = ttype == "buy" ? "<span class='badge bg-success'>B</span>" : "<span class='badge bg-danger'>S</span>";
+
+            $('#leaderboard-list').prepend("<div><a href='#' class='list-group-item list-group-item-action' aria-current='true'><div class='d-flex w-100 justify-content-between'><h6>" + name + "</h6></div><div class='d-flex w-100 justify-content-between'><small>" + quantity + " @ &#8377;" + atPrice + "</small>" + orderTypeBadge + transactionTypeBadge + "<span class='badge bg-warning text-dark'>" + mode.toUpperCase() + "</span></div><div class='d-flex w-100 justify-content-between' style='padding-top: 10px;'><span id='" + id + "-orderStatusBadge' class='badge bg-warning'>Pending</span><small id='" + id + "-orderID'></small></div></a></div>");
+        });
+
+        $('#buy-cnc').click(function () {
+            let companyName = $('#orderForm-cnc-companyName').val();
+            let companyCode = $('#orderForm-cnc-companyCode').val();
+            let orderQuantity = $('#orderForm-cnc-quantity').val();
+            let orderLotSize = $('#orderForm-cnc-lotSize').val();
+            let orderPrice = $('#orderForm-cnc-price').val();
+            let orderMode = "cnc";
+            let transactionType = "buy";
+            let orderType = "market";
+            if (document.getElementById('orderType-cnc-market').checked) {
+                orderType = "market";
+            }
+            if (document.getElementById('orderType-cnc-limit').checked) {
+                orderType = "limit";
+            }
+            socket.emit("transact", { ttype: transactionType, symbol: companyCode, name: companyName, quantity: orderQuantity, lotSize: orderLotSize, mode: orderMode, atPrice: orderPrice, otype: orderType });
+        });
+
+        $('#sell-cnc').click(function () {
+            let companyName = $('#orderForm-cnc-companyName').val();
+            let companyCode = $('#orderForm-cnc-companyCode').val();
+            let orderQuantity = $('#orderForm-cnc-quantity').val();
+            let orderLotSize = $('#orderForm-cnc-lotSize').val();
+            let orderPrice = $('#orderForm-cnc-price').val();
+            let orderMode = "cnc";
+            let transactionType = "sell";
+            let orderType = "market";
+            if (document.getElementById('orderType-cnc-market').checked) {
+                orderType = "market";
+            }
+            if (document.getElementById('orderType-cnc-limit').checked) {
+                orderType = "limit";
+            }
+            socket.emit("transact", { ttype: transactionType, symbol: companyCode, name: companyName, quantity: orderQuantity, lotSize: orderLotSize, mode: orderMode, atPrice: orderPrice, otype: orderType });
+        });
+
+        $('#buy-mis').click(function () {
+            let companyName = $('#orderForm-mis-companyName').val();
+            let companyCode = $('#orderForm-mis-companyCode').val();
+            let orderQuantity = $('#orderForm-mis-quantity').val();
+            let orderLotSize = $('#orderForm-mis-lotSize').val();
+            let orderPrice = $('#orderForm-mis-price').val();
+            let orderMode = "mis";
+            let transactionType = "buy";
+            let orderType = "market";
+            if (document.getElementById('orderType-mis-market').checked) {
+                orderType = "market";
+            }
+            if (document.getElementById('orderType-mis-limit').checked) {
+                orderType = "limit";
+            }
+            socket.emit("transact", { ttype: transactionType, symbol: companyCode, name: companyName, quantity: orderQuantity, lotSize: orderLotSize, mode: orderMode, atPrice: orderPrice, otype: orderType });
+        });
+
+        $('#sell-mis').click(function () {
+            let companyName = $('#orderForm-mis-companyName').val();
+            let companyCode = $('#orderForm-mis-companyCode').val();
+            let orderQuantity = $('#orderForm-mis-quantity').val();
+            let orderLotSize = $('#orderForm-mis-lotSize').val();
+            let orderPrice = $('#orderForm-mis-price').val();
+            let orderMode = "mis";
+            let transactionType = "sell";
+            let orderType = "market";
+            if (document.getElementById('orderType-mis-market').checked) {
+                orderType = "market";
+            }
+            if (document.getElementById('orderType-mis-limit').checked) {
+                orderType = "limit";
+            }
+            socket.emit("transact", { ttype: transactionType, symbol: companyCode, name: companyName, quantity: orderQuantity, lotSize: orderLotSize, mode: orderMode, atPrice: orderPrice, otype: orderType });
+        });
+
+        $('#orderType-cnc-limit').click(function () {
+            $('#orderForm-cnc-price').removeAttr('disabled');
+        });
+
+        $('#orderType-cnc-market').click(function () {
+            $('#orderForm-cnc-price').attr('disabled', 'true');
+        });
+
+        $('#orderType-mis-limit').click(function () {
+            $('#orderForm-mis-price').removeAttr('disabled');
+        });
+
+        $('#orderType-mis-market').click(function () {
+            $('#orderForm-mis-price').attr('disabled', 'true');
         });
 
     });
@@ -106,4 +230,70 @@
         // notify(action.concat(" ").concat(quoteName).concat(" at ").concat(price));
         // alert(quoteName);
     }
+
+    function fillOrderForm(companyID) {
+        document.getElementById("orderForm-cnc-companyName").value = document.getElementById(companyID + "-quoteName").innerText;
+        document.getElementById("orderForm-cnc-price").value = document.getElementById(companyID + "-marketPrice").innerText;
+        document.getElementById("orderForm-cnc-companyCode").value = companyID;
+        document.getElementById("orderForm-mis-companyName").value = document.getElementById(companyID + "-quoteName").innerText;
+        document.getElementById("orderForm-mis-price").value = document.getElementById(companyID + "-marketPrice").innerText;
+        document.getElementById("orderForm-mis-companyCode").value = companyID;
+        // alert(companyID);
+
+    }
+    // $("#hemhe").click(function () {
+    //     alert(event.srcElement.id);
+    // })
+</script>
+
+<!-- <script src="https://www.jsdelivr.com/package/npm/chart.js"></script> -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.4/Chart.js">
+</script>
+<!-- <script>
+    // var Chart = require('chart.js');
+    var ctx = document.getElementById('myChart').getContext('2d');
+    var myChart = new Chart(ctx, {
+        type: 'bar',
+        data: {
+            labels: ['Red', 'Blue', 'Yellow', 'Green', 'Purple', 'Orange'],
+            datasets: [{
+                label: '# of Votes',
+                data: [12, 19, 3, 5, 2, 3],
+                backgroundColor: [
+                    'rgba(255, 99, 132, 0.2)',
+                    'rgba(54, 162, 235, 0.2)',
+                    'rgba(255, 206, 86, 0.2)',
+                    'rgba(75, 192, 192, 0.2)',
+                    'rgba(153, 102, 255, 0.2)',
+                    'rgba(255, 159, 64, 0.2)'
+                ],
+                borderColor: [
+                    'rgba(255, 99, 132, 1)',
+                    'rgba(54, 162, 235, 1)',
+                    'rgba(255, 206, 86, 1)',
+                    'rgba(75, 192, 192, 1)',
+                    'rgba(153, 102, 255, 1)',
+                    'rgba(255, 159, 64, 1)'
+                ],
+                borderWidth: 1
+            }]
+        },
+        options: {
+            scales: {
+                y: {
+                    beginAtZero: true
+                }
+            }
+        }
+    });
+</script> -->
+
+<script type="text/javascript">
+
+
+
+
+
+
+
 </script>

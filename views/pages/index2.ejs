@@ -27,97 +27,118 @@
     <main class="my-5">
         <div class="container">
 
-            <section>
-                <!-- <div id="chart-container"></div> -->
-
-                <h4 class="mb-5 text-center"><strong>Your Watchlist</strong></h4>
-                <h5 class="mb-5 text-center">Market is <%= marketState %>
-                </h5>
-
-                <div class="row justify-content-center">
-
-                    <% quotes.forEach(function(quote) { %>
-                        <div class="col-lg-4 col-md-12 mb-4">
 
 
-                            <!-- <section class="mx-auto my-5" style="max-width: 23rem;"> -->
-                            <div class="card chart-card" style="max-width: 23rem;">
-                                <div class="card-body pb-0">
-                                    <h5 class="card-title font-weight-bold" id="<%= quote.id %>-quoteName">
-                                        <%= quote.name %>
-                                    </h5>
-                                    <p class="card-text mb-4">
-                                        <span id="<%= quote.id %>-quoteSymbol">
-                                            <%= quote.symbol %>
-                                        </span> • &#8377; • NSE • <span
-                                            class="text-<%= quote.badgeClassName %> align-self-end">
-                                            <%= quote.marketPriceChange> 0 ? "+" +
-                                                quote.marketPriceChange :
-                                                quote.marketPriceChange %>
-                                        </span>
+            <!-- <section> -->
+            <!-- <div id="chart-container"></div> -->
+            <div class="row">
+                <div class="col-lg-4 overflow-auto">
 
-                                    </p>
-                                    <div class="d-flex justify-content-between">
-                                        <p class="display-4 align-self-end" id="<%= quote.id %>-marketPrice">
-                                            <%= quote.marketPrice %>
-                                        </p>
-                                        <h5 class="align-self-end pb-2">
-                                            <span class="badge bg-<%= quote.badgeClassName %>">
-                                                <i class="fas fa-arrow-<%= quote.arrowType %>"></i>
-                                                <%= quote.marketPriceChangePercent %>
+                    <!-- <h4 class="mb-5 text-center"><strong>Your Watchlist</strong></h4> -->
+                    <!-- <h5 class="mb-5 text-center">Market is <%= marketState=="REGULAR" ? "OPEN" : "CLOSED" %> -->
+                    <!-- </h5> -->
+
+
+                    <div class="row align-items-start overflow-auto">
+
+                        <% quotes.forEach(function(quote) { %>
+                            <div class="col-lg-12 col-md-12 mb-1">
+
+
+                                <!-- <section class="mx-auto my-5" style="max-width: 23rem;"> -->
+                                <div class="card chart-card" style="max-width: 23rem;">
+                                    <div class="card-body pb-0">
+                                        <h5 class="card-title font-weight-bold" id="<%= quote.id %>-quoteName">
+                                            <%= quote.name %>
+                                        </h5>
+                                        <p class="card-text mb-4">
+                                            <span id="<%= quote.id %>-quoteSymbol">
+                                                <%= quote.symbol %>
+                                            </span> • &#8377; • NSE • <span
+                                                class="text-<%= quote.badgeClassName %> align-self-end"
+                                                id="<%= quote.id %>-marketPriceChange">
+                                                <%= quote.marketPriceChange> 0 ? "+" +
+                                                    quote.marketPriceChange :
+                                                    quote.marketPriceChange %>
                                             </span>
 
-                                        </h5>
+                                        </p>
+                                        <div class="d-flex justify-content-between">
+                                            <p class="display-4 align-self-end" id="<%= quote.id %>-marketPrice">
+                                                <%= quote.marketPrice %>
+                                            </p>
+                                            <h5 class="align-self-end pb-2">
+                                                <span class="badge bg-<%= quote.badgeClassName %>"
+                                                    id="<%= quote.id %>-marketPriceChangePercentBadge">
+                                                    <i class="fas fa-arrow-<%= quote.arrowType %>"
+                                                        id="<%= quote.id %>-marketPriceChangePercentArrow"></i>
+                                                    <span id="<%= quote.id %>-marketPriceChangePercent">
+                                                        <%= quote.marketPriceChangePercent %>%
+                                                    </span>
+                                                </span>
 
-                                    </div>
-
-
-                                    <div class="card-body d-flex justify-content-between">
-                                        <div class="btn-group btn-group-sm" role="group" aria-label="Transact">
-                                            <button type="button" id="<%= quote.id %>-buy" class="btn btn-success"
-                                                onClick='reply_click(this.id, "buy")'>Buy</button>
-                                            <button type="button" id="<%= quote.id %>-sell" class="btn btn-danger"
-                                                onClick='reply_click(this.id, "sell")'>Sell</button>
-
+                                            </h5>
 
                                         </div>
-                                        <!-- <button type="button" onclick="notify('Stock Info to be triggered', 'info');"
+
+
+                                        <div class="card-body d-flex justify-content-between">
+                                            <div class="btn-group btn-group-sm" role="group" aria-label="Transact">
+                                                <button type="button" id="<%= quote.id %>-buy" class="btn btn-success"
+                                                    onClick='reply_click(this.id, "buy")'>Buy</button>
+                                                <button type="button" id="<%= quote.id %>-sell" class="btn btn-danger"
+                                                    onClick='reply_click(this.id, "sell")'>Sell</button>
+
+
+                                            </div>
+                                            <!-- <button type="button" onclick="notify('Stock Info to be triggered', 'info');"
                                             class="btn btn-outline-primary btn-sm" data-mdb-ripple-color="dark">
                                             Explore
-                                        </button> -->
+                                            </button> -->
 
-                                        <button type="button" class="btn btn-primary btn-sm"
-                                            id="<%= quote.id %>-modalLaunch" data-mdb-toggle="modal"
-                                            data-mdb-target="#orderFormModal">
-                                            Place Order
-                                        </button>
+                                            <button type="button" class="btn btn-primary btn-sm"
+                                                id="<%= quote.id %>-modalLaunch" data-mdb-toggle="modal"
+                                                data-mdb-target="#orderFormModal">
+                                                Place Order
+                                            </button>
 
-                                        <!-- Collapsed content -->
+                                            <!-- Collapsed content -->
+
+                                        </div>
+
+
+
+
+                                        <!-- <hr> -->
+
+                                        <!-- <a href="#" class="btn btn-danger btn-sm">Sell</a>
+                                        <a href="#" class="btn btn-success btn-sm">Buy</a> -->
 
                                     </div>
 
-
-
-
-                                    <!-- <hr> -->
-
-                                    <!-- <a href="#" class="btn btn-danger btn-sm">Sell</a>
-                                        <a href="#" class="btn btn-success btn-sm">Buy</a> -->
-
                                 </div>
+                                <!-- </section> -->
+
+
+
+
 
                             </div>
-                            <!-- </section> -->
+                            <% }); %>
 
-
-
-
-
-                        </div>
-                        <% }); %>
-
+                    </div>
                 </div>
-            </section>
+                <div class="col-lg-8">
+                    <div class="row">
+                        <canvas id="myChart" style="width:100%;"></canvas>
+                    </div>
+                    <div class="row">
+
+                    </div>
+                </div>
+            </div>
+
+            <!-- </section> -->
             <!--Section: Content-->
 
             <!-- Pagination -->
@@ -145,9 +166,6 @@
                 Launch static backdrop modal
             </button> -->
 
-            <!-- Modal -->
-
-            <!-- Modal ends -->
         </div>
     </main>
     <!--Main layout-->
@@ -187,6 +205,42 @@
 
 
     </script>
+
+    <script>
+        var xyValues = [
+            { x: 50, y: 7 },
+            { x: 60, y: 8 },
+            { x: 70, y: 8 },
+            { x: 80, y: 9 },
+            { x: 90, y: 9 },
+            { x: 100, y: 9 },
+            { x: 110, y: 10 },
+            { x: 120, y: 11 },
+            { x: 130, y: 14 },
+            { x: 140, y: 14 },
+            { x: 150, y: 15 }
+        ];
+
+        new Chart("myChart", {
+            type: "scatter",
+            data: {
+                datasets: [{
+                    pointRadius: 4,
+                    pointBackgroundColor: "rgb(0,0,255)",
+                    data: xyValues
+                }]
+            },
+            options: {
+                legend: { display: false },
+                scales: {
+                    xAxes: [{ ticks: { min: 40, max: 160 } }],
+                    yAxes: [{ ticks: { min: 6, max: 16 } }],
+                }
+            }
+        });
+    </script>
+
+
 </body>
 
 </html>
