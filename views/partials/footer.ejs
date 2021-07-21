@@ -113,7 +113,7 @@
             let orderTypeBadge = otype == "market" ? "<span class='badge bg-primary'>M</span>" : "<span class='badge bg-secondary'>L</span>";
             let transactionTypeBadge = ttype == "buy" ? "<span class='badge bg-success'>B</span>" : "<span class='badge bg-danger'>S</span>";
 
-            $('#leaderboard-list').prepend("<div><a href='#' class='list-group-item list-group-item-action' aria-current='true'><div class='d-flex w-100 justify-content-between'><h6>" + name + "</h6></div><div class='d-flex w-100 justify-content-between'><small>" + quantity + " @ &#8377;" + atPrice + "</small>" + orderTypeBadge + transactionTypeBadge + "<span class='badge bg-warning text-dark'>" + mode.toUpperCase() + "</span></div><div class='d-flex w-100 justify-content-between' style='padding-top: 10px;'><span id='" + id + "-orderStatusBadge' class='badge bg-warning'>Pending</span><small id='" + id + "-orderID'></small></div></a></div>");
+            $('#leaderboard-list').prepend("<div><a href='#' class='list-group-item list-group-item-action' aria-current='true'><div class='d-flex w-100 justify-content-between'><h6>" + name + "</h6><span id='" + id + "-orderStatusBadge' class='badge bg-warning' style='margin-bottom: 10px;'>Pending</span></div><div class='d-flex w-100 justify-content-between'><small>" + quantity + " @ &#8377;" + atPrice + "</small>" + orderTypeBadge + transactionTypeBadge + "<span class='badge bg-warning text-dark'>" + mode.toUpperCase() + "</span></div><div class='d-flex w-100 justify-content-between' style='padding-top: 10px;'><small>ID : </small><small id='" + id + "-orderID'></small></div></a></div>");
         });
 
         $('#buy-cnc').click(function () {
