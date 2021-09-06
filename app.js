@@ -58,31 +58,6 @@ const symbols = [
   "SBILIFE.NS",
   "TITAN.NS",
   "BAJAJFINSV.NS",
-  "SHREECEM.NS",
-  "SBIN.NS",
-  "BPCL.NS",
-  "TATACONSUM.NS",
-  "BAJFINANCE.NS",
-  "COALINDIA.NS",
-  "NTPC.NS",
-  "DIVISLAB.NS",
-  "MARUTI.NS",
-  "NESTLEIND.NS",
-  "ADANIPORTS.NS",
-  "BHARTIARTL.NS",
-  "ASIANPAINT.NS",
-  "ICICIBANK.NS",
-  "TATASTEEL.NS",
-  "POWERGRID.NS",
-  "HDFCBANK.NS",
-  "JSWSTEEL.NS",
-  "ITC.NS",
-  "SUNPHARMA.NS",
-  "KOTAKBANK.NS",
-  "BRITANNIA.NS",
-  "ONGC.NS",
-  "INDUSINDBK.NS",
-  "IOC.NS",
 ];
 
 async function getPrices() {
@@ -141,8 +116,8 @@ app.use("/", require("./routes/index"));
 app.use("/users", require("./routes/users"));
 // app.use("/events", require("./routes/events"));
 
-// const port = process.env.PORT;
-const port = 8080;
+const port = process.env.PORT;
+// const port = 8080;
 // app.listen(port);
 // console.log(`Server is listening on port ${port}`);
 
@@ -335,7 +310,6 @@ setInterval(async function () {
   var quotes = [];
 
   // Active when market is live
-
   const msg = await getPrices().then((result) => {
     result.forEach((quote) => {
       quotes.push({
