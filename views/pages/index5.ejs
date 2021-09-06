@@ -2,8 +2,8 @@
 <html lang="en">
 
 <head>
-    <%- include('../partials/head'); %>
-        <!-- <style>
+  <%- include('../partials/head'); %>
+  <!-- <style>
             body {
                 background-color: #f5f7fa;
             }
@@ -15,371 +15,348 @@
             }
         </style> -->
 
-        <style>
-            body {
-                background-color: #fbfbfb;
-            }
+  <style>
+    body {
+      background-color: #fbfbfb;
+    }
 
-            @media (min-width: 991.98px) {
-                main {
-                    padding-left: 180px;
-                }
-            }
+    @media (min-width: 991.98px) {
+      main {
+        padding-left: 180px;
+      }
+    }
 
-            /* Sidebar */
-            .sidebar {
-                position: fixed;
-                top: 0;
-                bottom: 0;
-                left: 0;
-                padding: 58px 0 0;
-                /* Height of navbar */
-                box-shadow: 0 2px 5px 0 rgb(0 0 0 / 5%), 0 2px 10px 0 rgb(0 0 0 / 5%);
-                width: 240px;
-                z-index: 600;
-            }
+    /* Sidebar */
+    .sidebar {
+      position: fixed;
+      top: 0;
+      bottom: 0;
+      left: 0;
+      padding: 58px 0 0;
+      /* Height of navbar */
+      box-shadow: 0 2px 5px 0 rgb(0 0 0 / 5%), 0 2px 10px 0 rgb(0 0 0 / 5%);
+      width: 240px;
+      z-index: 600;
+    }
 
-            @media (max-width: 991.98px) {
-                .sidebar {
-                    width: 100%;
-                }
-            }
+    @media (max-width: 991.98px) {
+      .sidebar {
+        width: 100%;
+      }
+    }
 
-            .sidebar .active {
-                border-radius: 5px;
-                box-shadow: 0 2px 5px 0 rgb(0 0 0 / 16%), 0 2px 10px 0 rgb(0 0 0 / 12%);
-            }
+    .sidebar .active {
+      border-radius: 5px;
+      box-shadow: 0 2px 5px 0 rgb(0 0 0 / 16%), 0 2px 10px 0 rgb(0 0 0 / 12%);
+    }
 
-            .sidebar-sticky {
-                position: relative;
-                top: 0;
-                height: calc(100vh - 48px);
-                padding-top: 0.5rem;
-                overflow-x: hidden;
-                overflow-y: auto;
-                /* Scrollable contents if viewport is shorter than content. */
-            }
+    .sidebar-sticky {
+      position: relative;
+      top: 0;
+      height: calc(100vh - 48px);
+      padding-top: 0.5rem;
+      overflow-x: hidden;
+      overflow-y: auto;
+      /* Scrollable contents if viewport is shorter than content. */
+    }
 
-            .list-group {
-                /* max-height: 80%; */
-                height: calc(100vh - 120px);
-                /* margin-bottom: 100px; */
-                overflow: scroll;
-                -webkit-overflow-scrolling: touch;
-            }
+    .list-group {
+      /* max-height: 80%; */
+      height: calc(100vh - 120px);
+      /* margin-bottom: 100px; */
+      overflow: scroll;
+      -webkit-overflow-scrolling: touch;
+    }
 
-            .list-group-leaderboard {
-                max-height: 275px;
-                /* height: calc(100%); */
-                /* max-height: 100vh; */
-                /* margin-bottom: 100px; */
-                overflow: auto;
-                -webkit-overflow-scrolling: touch;
+    .list-group-leaderboard {
+      max-height: 275px;
+      /* height: calc(100%); */
+      /* max-height: 100vh; */
+      /* margin-bottom: 100px; */
+      overflow: auto;
+      -webkit-overflow-scrolling: touch;
 
-            }
+    }
 
-            a.menu_links {
-                cursor: pointer;
-            }
+    a.menu_links {
+      cursor: pointer;
+    }
 
-            .menu-container {
-                height: 100vh;
-            }
-        </style>
+    .menu-container {
+      height: 100vh;
+    }
+  </style>
 
 </head>
 
 <body>
-    <!--Main Navigation-->
-    <header>
-        <!-- Sidebar -->
-        <nav id="sidebarMenu" class="collapse d-lg-block sidebar collapse bg-white">
-            <div class="position-sticky">
-                <div class="list-group list-group-flush mx-3 mt-4">
-                    <a href="#" class="list-group-item list-group-item-action py-2 ripple" aria-current="true">
-                        <i class="fas fa-tachometer-alt fa-fw me-3"></i><span>Main dashboard</span>
-                    </a>
-                    <a href="#" class="list-group-item list-group-item-action py-2 ripple active">
-                        <i class="fas fa-chart-area fa-fw me-3"></i><span>Webiste traffic</span>
-                    </a>
-                    <a href="#" class="list-group-item list-group-item-action py-2 ripple"><i
-                            class="fas fa-lock fa-fw me-3"></i><span>Password</span></a>
-                    <a href="#" class="list-group-item list-group-item-action py-2 ripple"><i
-                            class="fas fa-chart-line fa-fw me-3"></i><span>Analytics</span></a>
-                    <a href="#" class="list-group-item list-group-item-action py-2 ripple">
-                        <i class="fas fa-chart-pie fa-fw me-3"></i><span>SEO</span>
-                    </a>
-                    <a href="#" class="list-group-item list-group-item-action py-2 ripple"><i
-                            class="fas fa-chart-bar fa-fw me-3"></i><span>Orders</span></a>
-                    <a href="#" class="list-group-item list-group-item-action py-2 ripple"><i
-                            class="fas fa-globe fa-fw me-3"></i><span>International</span></a>
-                    <a href="#" class="list-group-item list-group-item-action py-2 ripple"><i
-                            class="fas fa-building fa-fw me-3"></i><span>Partners</span></a>
-                    <a href="#" class="list-group-item list-group-item-action py-2 ripple"><i
-                            class="fas fa-calendar fa-fw me-3"></i><span>Calendar</span></a>
-                    <a href="#" class="list-group-item list-group-item-action py-2 ripple"><i
-                            class="fas fa-users fa-fw me-3"></i><span>Users</span></a>
-                    <a href="#" class="list-group-item list-group-item-action py-2 ripple"><i
-                            class="fas fa-money-bill fa-fw me-3"></i><span>Sales</span></a>
-                </div>
-            </div>
-        </nav>
-        <!-- Sidebar -->
+  <!--Main Navigation-->
+  <header>
+    <!-- Sidebar -->
+    <nav id="sidebarMenu" class="collapse d-lg-block sidebar collapse bg-white">
+      <div class="position-sticky">
+        <div class="list-group list-group-flush mx-3 mt-4">
+          <a href="#" class="list-group-item list-group-item-action py-2 ripple" aria-current="true">
+            <i class="fas fa-tachometer-alt fa-fw me-3"></i><span>Main dashboard</span>
+          </a>
+          <a href="#" class="list-group-item list-group-item-action py-2 ripple active">
+            <i class="fas fa-chart-area fa-fw me-3"></i><span>Webiste traffic</span>
+          </a>
+          <a href="#" class="list-group-item list-group-item-action py-2 ripple"><i class="fas fa-lock fa-fw me-3"></i><span>Password</span></a>
+          <a href="#" class="list-group-item list-group-item-action py-2 ripple"><i class="fas fa-chart-line fa-fw me-3"></i><span>Analytics</span></a>
+          <a href="#" class="list-group-item list-group-item-action py-2 ripple">
+            <i class="fas fa-chart-pie fa-fw me-3"></i><span>SEO</span>
+          </a>
+          <a href="#" class="list-group-item list-group-item-action py-2 ripple"><i class="fas fa-chart-bar fa-fw me-3"></i><span>Orders</span></a>
+          <a href="#" class="list-group-item list-group-item-action py-2 ripple"><i class="fas fa-globe fa-fw me-3"></i><span>International</span></a>
+          <a href="#" class="list-group-item list-group-item-action py-2 ripple"><i class="fas fa-building fa-fw me-3"></i><span>Partners</span></a>
+          <a href="#" class="list-group-item list-group-item-action py-2 ripple"><i class="fas fa-calendar fa-fw me-3"></i><span>Calendar</span></a>
+          <a href="#" class="list-group-item list-group-item-action py-2 ripple"><i class="fas fa-users fa-fw me-3"></i><span>Users</span></a>
+          <a href="#" class="list-group-item list-group-item-action py-2 ripple"><i class="fas fa-money-bill fa-fw me-3"></i><span>Sales</span></a>
+        </div>
+      </div>
+    </nav>
+    <!-- Sidebar -->
 
-        <!-- Navbar -->
-        <nav id="main-navbar" class="navbar navbar-expand-lg navbar-light bg-white fixed-top">
-            <!-- Container wrapper -->
-            <div class="container-fluid">
-                <!-- Toggle button -->
-                <button class="navbar-toggler" type="button" data-mdb-toggle="collapse" data-mdb-target="#sidebarMenu"
-                    aria-controls="sidebarMenu" aria-expanded="false" aria-label="Toggle navigation">
-                    <i class="fas fa-bars"></i>
-                </button>
+    <!-- Navbar -->
+    <nav id="main-navbar" class="navbar navbar-expand-lg navbar-light bg-white fixed-top">
+      <!-- Container wrapper -->
+      <div class="container-fluid">
+        <!-- Toggle button -->
+        <button class="navbar-toggler" type="button" data-mdb-toggle="collapse" data-mdb-target="#sidebarMenu" aria-controls="sidebarMenu" aria-expanded="false" aria-label="Toggle navigation">
+          <i class="fas fa-bars"></i>
+        </button>
 
-                <!-- Brand -->
-                <a class="navbar-brand" href="#">
-                    <img src="https://mdbootstrap.com/img/logo/mdb-transaprent-noshadows.png" height="25" alt=""
-                        loading="lazy" />
-                </a>
-                <!-- Search form -->
-                <form class="d-none d-md-flex input-group w-auto my-auto">
-                    <input autocomplete="off" type="search" class="form-control rounded"
-                        placeholder='Search (ctrl + "/" to focus)' style="min-width: 225px" />
-                    <span class="input-group-text border-0"><i class="fas fa-search"></i></span>
-                </form>
+        <!-- Brand -->
+        <a class="navbar-brand" href="#">
+          <img src="https://mdbootstrap.com/img/logo/mdb-transaprent-noshadows.png" height="25" alt="" loading="lazy" />
+        </a>
+        <!-- Search form -->
+        <form class="d-none d-md-flex input-group w-auto my-auto">
+          <input autocomplete="off" type="search" class="form-control rounded" placeholder='Search (ctrl + "/" to focus)' style="min-width: 225px" />
+          <span class="input-group-text border-0"><i class="fas fa-search"></i></span>
+        </form>
 
-                <!-- Right links -->
-                <ul class="navbar-nav ms-auto d-flex flex-row">
-                    <!-- Notification dropdown -->
-                    <li class="nav-item dropdown">
-                        <a class="nav-link me-3 me-lg-0 dropdown-toggle hidden-arrow" href="#"
-                            id="navbarDropdownMenuLink" role="button" data-mdb-toggle="dropdown" aria-expanded="false">
-                            <i class="fas fa-bell"></i>
-                            <span class="badge rounded-pill badge-notification bg-danger">1</span>
-                        </a>
-                        <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdownMenuLink">
-                            <li><a class="dropdown-item" href="#">Some news</a></li>
-                            <li><a class="dropdown-item" href="#">Another news</a></li>
-                            <li>
-                                <a class="dropdown-item" href="#">Something else here</a>
-                            </li>
-                        </ul>
-                    </li>
+        <!-- Right links -->
+        <ul class="navbar-nav ms-auto d-flex flex-row">
+          <!-- Notification dropdown -->
+          <li class="nav-item dropdown">
+            <a class="nav-link me-3 me-lg-0 dropdown-toggle hidden-arrow" href="#" id="navbarDropdownMenuLink" role="button" data-mdb-toggle="dropdown" aria-expanded="false">
+              <i class="fas fa-bell"></i>
+              <span class="badge rounded-pill badge-notification bg-danger">1</span>
+            </a>
+            <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdownMenuLink">
+              <li><a class="dropdown-item" href="#">Some news</a></li>
+              <li><a class="dropdown-item" href="#">Another news</a></li>
+              <li>
+                <a class="dropdown-item" href="#">Something else here</a>
+              </li>
+            </ul>
+          </li>
 
-                    <!-- Icon -->
-                    <li class="nav-item">
-                        <a class="nav-link me-3 me-lg-0" href="#">
-                            <i class="fas fa-fill-drip"></i>
-                        </a>
-                    </li>
-                    <!-- Icon -->
-                    <li class="nav-item me-3 me-lg-0">
-                        <a class="nav-link" href="#">
-                            <i class="fab fa-github"></i>
-                        </a>
-                    </li>
+          <!-- Icon -->
+          <li class="nav-item">
+            <a class="nav-link me-3 me-lg-0" href="#">
+              <i class="fas fa-fill-drip"></i>
+            </a>
+          </li>
+          <!-- Icon -->
+          <li class="nav-item me-3 me-lg-0">
+            <a class="nav-link" href="#">
+              <i class="fab fa-github"></i>
+            </a>
+          </li>
 
-                    <!-- Icon dropdown -->
-                    <li class="nav-item dropdown">
-                        <a class="nav-link me-3 me-lg-0 dropdown-toggle hidden-arrow" href="#" id="navbarDropdown"
-                            role="button" data-mdb-toggle="dropdown" aria-expanded="false">
-                            <i class="united kingdom flag m-0"></i>
-                        </a>
-                        <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdown">
-                            <li>
-                                <a class="dropdown-item" href="#"><i class="united kingdom flag"></i>English
-                                    <i class="fa fa-check text-success ms-2"></i></a>
-                            </li>
-                            <li>
-                                <hr class="dropdown-divider" />
-                            </li>
+          <!-- Icon dropdown -->
+          <li class="nav-item dropdown">
+            <a class="nav-link me-3 me-lg-0 dropdown-toggle hidden-arrow" href="#" id="navbarDropdown" role="button" data-mdb-toggle="dropdown" aria-expanded="false">
+              <i class="united kingdom flag m-0"></i>
+            </a>
+            <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdown">
+              <li>
+                <a class="dropdown-item" href="#"><i class="united kingdom flag"></i>English
+                  <i class="fa fa-check text-success ms-2"></i></a>
+              </li>
+              <li>
+                <hr class="dropdown-divider" />
+              </li>
 
-                        </ul>
-                    </li>
+            </ul>
+          </li>
 
-                    <!-- Avatar -->
-                    <li class="nav-item dropdown">
-                        <a class="nav-link dropdown-toggle hidden-arrow d-flex align-items-center" href="#"
-                            id="navbarDropdownMenuLink" role="button" data-mdb-toggle="dropdown" aria-expanded="false">
-                            <img src="https://mdbootstrap.com/img/Photos/Avatars/img (31).jpg" class="rounded-circle"
-                                height="22" alt="" loading="lazy" />
-                        </a>
-                        <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdownMenuLink">
-                            <li><a class="dropdown-item" href="#">My profile</a></li>
-                            <li><a class="dropdown-item" href="#">Settings</a></li>
-                            <li><a class="dropdown-item" href="#">Logout</a></li>
-                        </ul>
-                    </li>
-                </ul>
-            </div>
-            <!-- Container wrapper -->
-        </nav>
-        <!-- Navbar -->
-    </header>
-    <!--Main Navigation-->
+          <!-- Avatar -->
+          <li class="nav-item dropdown">
+            <a class="nav-link dropdown-toggle hidden-arrow d-flex align-items-center" href="#" id="navbarDropdownMenuLink" role="button" data-mdb-toggle="dropdown" aria-expanded="false">
+              <img src="https://mdbootstrap.com/img/Photos/Avatars/img (31).jpg" class="rounded-circle" height="22" alt="" loading="lazy" />
+            </a>
+            <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdownMenuLink">
+              <li><a class="dropdown-item" href="#">My profile</a></li>
+              <li><a class="dropdown-item" href="#">Settings</a></li>
+              <li><a class="dropdown-item" href="#">Logout</a></li>
+            </ul>
+          </li>
+        </ul>
+      </div>
+      <!-- Container wrapper -->
+    </nav>
+    <!-- Navbar -->
+  </header>
+  <!--Main Navigation-->
 
-    <!--Main layout-->
-    <main style="margin-top: 38px" style="overflow: hidden;">
-        <div class="container" style="overflow-y:hidden;">
-            <div class="row gx-3">
-                <div class="col-lg-4">
-                    <div class="container py-2" style="overflow: auto;">
-                        <h4 class="text-center">Your Watchlist</h4>
-                        <div class="list-group overflow-auto" style="overflow-y: scroll;">
-                            <% quotes.forEach(function(quote) { %>
-                                <div id="<%= quote.id %>-watchlistItem" onclick="fillOrderForm('<%=quote.id %>')">
-                                    <a class="list-group-item list-group-item-action menu_links" aria-current="true">
-                                        <div class="d-flex w-100 justify-content-between">
-                                            <h6 class="mb-1" id="<%= quote.id %>-quoteName">
-                                                <%= quote.name %>
-                                            </h6>
-                                            <h5 class="display-8 align-self-end" id="<%= quote.id %>-marketPrice">
-                                                <%= quote.marketPrice %>
-                                            </h5>
+  <!--Main layout-->
+  <main style="margin-top: 38px" style="overflow: hidden;">
+    <div class="container" style="overflow-y:hidden;">
+      <div class="row gx-3">
+        <div class="col-lg-4">
+          <div class="container py-2" style="overflow: auto;">
+            <h4 class="text-center">Your Watchlist</h4>
+            <div class="list-group overflow-auto" style="overflow-y: scroll;">
+              <% quotes.forEach(function(quote) { %>
+              <div id="<%= quote.id %>-watchlistItem" onclick="fillOrderForm('<%=quote.id %>')">
+                <a class="list-group-item list-group-item-action menu_links" aria-current="true">
+                  <div class="d-flex w-100 justify-content-between">
+                    <h6 class="mb-1" id="<%= quote.id %>-quoteName">
+                      <%= quote.name %>
+                    </h6>
+                    <h5 class="display-8 align-self-end" id="<%= quote.id %>-marketPrice">
+                      <%= quote.marketPrice %>
+                    </h5>
 
-                                            <!-- <small>3 days ago</small> -->
-                                        </div>
-                                        <!-- <p class="mb-1">
+                    <!-- <small>3 days ago</small> -->
+                  </div>
+                  <!-- <p class="mb-1">
                                         Donec id elit non mi porta gravida at eget metus. Maecenas sed diam eget risus
                                         varius blandit.
                                     </p> -->
-                                        <div class="d-flex w-100 justify-content-between">
-                                            <small>&#8377; • NSE</small>
-                                            <small>
-                                                <span class="text-<%= quote.badgeClassName %> align-self-end"
-                                                    id="<%= quote.id %>-marketPriceChange">
-                                                    <%= quote.marketPriceChange> 0 ? "+" +
+                  <div class="d-flex w-100 justify-content-between">
+                    <small>&#8377; • NSE</small>
+                    <small>
+                      <span class="text-<%= quote.badgeClassName %> align-self-end" id="<%= quote.id %>-marketPriceChange">
+                        <%= quote.marketPriceChange> 0 ? "+" +
                                                         quote.marketPriceChange :
                                                         quote.marketPriceChange %>
-                                                </span>
-                                                <span class="badge bg-<%= quote.badgeClassName %>"
-                                                    id="<%= quote.id %>-marketPriceChangePercentBadge">
-                                                    <i class="fas fa-arrow-<%= quote.arrowType %>"
-                                                        id="<%= quote.id %>-marketPriceChangePercentArrow"></i>
-                                                    <span id="<%= quote.id %>-marketPriceChangePercent">
-                                                        <%= quote.marketPriceChangePercent %>%
-                                                    </span>
-                                                </span>
-                                            </small>
-                                        </div>
-                                    </a>
-                                </div>
-                                <% }); %>
-                        </div>
-
-                    </div>
-                </div>
-                <div class="col-lg-8">
-                    <!-- Section: Main chart -->
-                    <section class="mb-4">
-                        <div class="card">
-                            <div class="card-header">
-                                <h5 class="mb-0 text-center"><strong>Performance</strong></h5>
-                            </div>
-                            <div class="card-body">
-                                <canvas class="my-4 w-100" id="myChart" height="280"></canvas>
-                            </div>
-                        </div>
-                    </section>
-                    <!-- Section: Main chart -->
-                    <div class="row">
-                        <div class="col-lg-6">
-                            <section class="mb-4">
-                                <div class="card">
-                                    <%- include('../partials/form'); %>
-                                </div>
-                            </section>
-                        </div>
-                        <div class="col-lg-6">
-                            <div class="card">
-                                <h5 class="text-center card-header">Order Book</h5>
-
-                                <div class="list-group-leaderboard" id="leaderboard-list" style=" overflow-y: auto;">
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                </div>
+                      </span>
+                      <span class="badge bg-<%= quote.badgeClassName %>" id="<%= quote.id %>-marketPriceChangePercentBadge">
+                        <i class="fas fa-arrow-<%= quote.arrowType %>" id="<%= quote.id %>-marketPriceChangePercentArrow"></i>
+                        <span id="<%= quote.id %>-marketPriceChangePercent">
+                          <%= quote.marketPriceChangePercent %>%
+                        </span>
+                      </span>
+                    </small>
+                  </div>
+                </a>
+              </div>
+              <% }); %>
             </div>
 
+          </div>
         </div>
-    </main>
-    <!--Main layout-->
-    <footer>
-        <%- include('../partials/footer'); %>
-    </footer>
+        <div class="col-lg-8">
+          <!-- Section: Main chart -->
+          <section class="mb-4">
+            <div class="card">
+              <div class="card-header">
+                <h5 class="mb-0 text-center"><strong>Performance</strong></h5>
+              </div>
+              <div class="card-body">
+                <canvas class="my-4 w-100" id="myChart" height="280"></canvas>
+              </div>
+            </div>
+          </section>
+          <!-- Section: Main chart -->
+          <div class="row">
+            <div class="col-lg-6">
+              <section class="mb-4">
+                <div class="card">
+                  <%- include('../partials/form'); %>
+                </div>
+              </section>
+            </div>
+            <div class="col-lg-6">
+              <div class="card">
+                <h5 class="text-center card-header">Order Book</h5>
 
-    <script type="text/javascript">
-        function notify(displayText, type) {
-            var color;
-            color = type == "sell" ? "red" : "green";
-            if (type == "info") {
-                color = "blue";
-            }
-            else if (type == "queue") {
-                color = "linear-gradient(to right, #00b09b, #96c93d)";
-            }
-            Toastify({
-                text: displayText,
-                duration: 3000,
-                destination: "https://github.com/skshahnawaz",
-                newWindow: true,
-                className: "info",
-                close: true,
-                gravity: "top", // `top` or `bottom`
-                position: "right", // `left`, `center` or `right`
-                // backgroundColor: "linear-gradient(to right, #00b09b, #96c93d)",
-                backgroundColor: color,
-                stopOnFocus: true, // Prevents dismissing of toast on hover
-                onClick: function () { } // Callback after click
-            }).showToast();
-        }
-    </script>
+                <div class="list-group-leaderboard" id="leaderboard-list" style=" overflow-y: auto;">
+                </div>
+              </div>
+            </div>
+          </div>
 
-    <script>
-        // Graph
-        var ctx = document.getElementById("myChart");
+        </div>
+      </div>
 
-        var myChart = new Chart(ctx, {
-            type: "line",
-            data: {
-                labels: [
-                    "Sunday",
-                    "Monday",
-                    "Tuesday",
-                    "Wednesday",
-                    "Thursday",
-                    "Friday",
-                    "Saturday",
-                ],
-                datasets: [
-                    {
-                        data: [15339, 21345, 18483, 24003, 23489, 24092, 12034],
-                        lineTension: 0,
-                        backgroundColor: "transparent",
-                        borderColor: "#007bff",
-                        borderWidth: 4,
-                        pointBackgroundColor: "#007bff",
-                    },
-                ],
+    </div>
+  </main>
+  <!--Main layout-->
+  <footer>
+    <%- include('../partials/footer'); %>
+  </footer>
+
+  <script type="text/javascript">
+    function notify(displayText, type) {
+      var color;
+      color = type == "sell" ? "red" : "green";
+      if (type == "info") {
+        color = "blue";
+      } else if (type == "queue") {
+        color = "linear-gradient(to right, #00b09b, #96c93d)";
+      }
+      Toastify({
+        text: displayText,
+        duration: 3000,
+        destination: "https://github.com/skshahnawaz",
+        newWindow: true,
+        className: "info",
+        close: true,
+        gravity: "top", // `top` or `bottom`
+        position: "right", // `left`, `center` or `right`
+        // backgroundColor: "linear-gradient(to right, #00b09b, #96c93d)",
+        backgroundColor: color,
+        stopOnFocus: true, // Prevents dismissing of toast on hover
+        onClick: function() {} // Callback after click
+      }).showToast();
+    }
+  </script>
+
+  <script>
+    // Graph
+    var ctx = document.getElementById("myChart");
+
+    var myChart = new Chart(ctx, {
+      type: "line",
+      data: {
+        labels: [
+          "Sunday",
+          "Monday",
+          "Tuesday",
+          "Wednesday",
+          "Thursday",
+          "Friday",
+          "Saturday",
+        ],
+        datasets: [{
+          data: [15339, 21345, 18483, 24003, 23489, 24092, 12034],
+          lineTension: 0,
+          backgroundColor: "transparent",
+          borderColor: "#007bff",
+          borderWidth: 4,
+          pointBackgroundColor: "#007bff",
+        }, ],
+      },
+      options: {
+        scales: {
+          yAxes: [{
+            ticks: {
+              beginAtZero: false,
             },
-            options: {
-                scales: {
-                    yAxes: [
-                        {
-                            ticks: {
-                                beginAtZero: false,
-                            },
-                        },
-                    ],
-                },
-                legend: {
-                    display: false,
-                },
-            },
-        });
-    </script>
+          }, ],
+        },
+        legend: {
+          display: false,
+        },
+      },
+    });
+  </script>
 </body>
 
 </html>

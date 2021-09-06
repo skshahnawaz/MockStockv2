@@ -1,6 +1,6 @@
 <!--Footer-->
 <footer class="bg-light text-lg-start">
-    <!-- <div class="py-4 text-center">
+  <!-- <div class="py-4 text-center">
         <a role="button" class="btn btn-primary btn-lg m-2"
             href="https://www.youtube.com/channel/UC5CF7mLQZhvx8O5GODZAhdA" rel="nofollow" target="_blank">
             Learn Bootstrap 5
@@ -33,12 +33,12 @@
         </a>
     </div> -->
 
-    <!-- Copyright -->
-    <!-- <div class="text-center p-3" style="background-color: rgba(0, 0, 0, 0.2);">
+  <!-- Copyright -->
+  <!-- <div class="text-center p-3" style="background-color: rgba(0, 0, 0, 0.2);">
         © 2021 Copyright:
         <a class="text-dark" href="#">JU E-Cell</a>
     </div> -->
-    <!-- Copyright -->
+  <!-- Copyright -->
 </footer>
 <!--Footer-->
 
@@ -50,204 +50,308 @@
 
 <script src="/socket.io/socket.io.js"></script>
 <script>
-    $(document).ready(function () {
-        var socket = io();
+  $(document).ready(function() {
+    var socket = io();
 
-        // $("#add_status").click(function () {
-        //     socket.emit('status added', $("#comment").val());
-        // });
-        // socket.on("refresh feed", function (msg) {
-        //     $("#tick_messages1").text(msg.data);
-        // });
+    // $("#add_status").click(function () {
+    //     socket.emit('status added', $("#comment").val());
+    // });
+    // socket.on("refresh feed", function (msg) {
+    //     $("#tick_messages1").text(msg.data);
+    // });
 
-        socket.on("update prices", function (quotes) {
+    socket.on("update prices", function(quotes) {
 
-            quotes.quoteList.forEach(quote => {
-                var marketPriceElementID = quote.symbol.concat("-marketPrice");
-                var marketPriceChangeElementID = quote.symbol.concat("-marketPriceChange");
-                var marketPriceChangePercentArrowElementID = quote.symbol.concat("-marketPriceChangePercentArrow");
-                var marketPriceChangePercentElementID = quote.symbol.concat("-marketPriceChangePercent");
-                var marketPriceChangePercentBadgeElementID = quote.symbol.concat("-marketPriceChangePercentBadge");
+      quotes.quoteList.forEach(quote => {
+        var marketPriceElementID = quote.symbol.concat("-marketPrice");
+        var marketPriceChangeElementID = quote.symbol.concat("-marketPriceChange");
+        var marketPriceChangePercentArrowElementID = quote.symbol.concat("-marketPriceChangePercentArrow");
+        var marketPriceChangePercentElementID = quote.symbol.concat("-marketPriceChangePercent");
+        var marketPriceChangePercentBadgeElementID = quote.symbol.concat("-marketPriceChangePercentBadge");
 
-                var change = quote.marketPriceChange > 0 ? "+" +
-                    quote.marketPriceChange :
-                    quote.marketPriceChange;
+        var change = quote.marketPriceChange > 0 ? "+" +
+          quote.marketPriceChange :
+          quote.marketPriceChange;
 
-                document.getElementById(marketPriceElementID).innerText = quote.marketPrice;
-                document.getElementById(marketPriceChangeElementID).innerText = change;
-                document.getElementById(marketPriceChangeElementID).className = "text-" + quote.badgeClassName;
-                document.getElementById(marketPriceChangePercentArrowElementID).className = "fas fa-arrow-" + quote.arrowType;
-                document.getElementById(marketPriceChangePercentElementID).innerText = quote.marketPriceChangePercent + "%";
-                document.getElementById(marketPriceChangePercentBadgeElementID).className = "badge bg-" + quote.badgeClassName;
-            });
-
-        });
-
-        socket.on("transaction successful", (transaction) => {
-            const { id, ttype, symbol, name, atPrice } = transaction;
-            const transactionMessage = "Transaction successful : " + id + " - " + ttype +
-                " " +
-                name +
-                "(" +
-                symbol +
-                ") at " +
-                atPrice;
-            notify(transactionMessage, ttype);
-            document.getElementById(id + "-orderStatusBadge").classList.remove('bg-warning');
-            document.getElementById(id + "-orderStatusBadge").classList.add('bg-success');
-            document.getElementById(id + "-orderStatusBadge").innerText = "Complete";
-            document.getElementById(id + "-orderID").innerText = id;
-        });
-
-        socket.on("transaction queued", (transaction) => {
-            const { id, ttype, symbol, name, quantity, lotSize, mode, atPrice, otype } = transaction;
-            const transactionMessage = "Order submitted to exchange : " + id + " - " + ttype +
-                " " +
-                name +
-                "(" +
-                symbol +
-                ") at " +
-                atPrice;
-            notify(transactionMessage, "queue");
-
-            let orderTypeBadge = otype == "market" ? "<span class='badge bg-primary'>M</span>" : "<span class='badge bg-secondary'>L</span>";
-            let transactionTypeBadge = ttype == "buy" ? "<span class='badge bg-success'>B</span>" : "<span class='badge bg-danger'>S</span>";
-
-            $('#leaderboard-list').prepend("<div><a href='#' class='list-group-item list-group-item-action' aria-current='true'><div class='d-flex w-100 justify-content-between'><h6>" + name + "</h6><span id='" + id + "-orderStatusBadge' class='badge bg-warning' style='margin-bottom: 10px;'>Pending</span></div><div class='d-flex w-100 justify-content-between'><small>" + quantity + " @ &#8377;" + atPrice + "</small>" + orderTypeBadge + transactionTypeBadge + "<span class='badge bg-warning text-dark'>" + mode.toUpperCase() + "</span></div><div class='d-flex w-100 justify-content-between' style='padding-top: 10px;'><small>ID : </small><small id='" + id + "-orderID'></small></div></a></div>");
-        });
-
-        $('#buy-cnc').click(function () {
-            let companyName = $('#orderForm-cnc-companyName').val();
-            let companyCode = $('#orderForm-cnc-companyCode').val();
-            let orderQuantity = $('#orderForm-cnc-quantity').val();
-            let orderLotSize = $('#orderForm-cnc-lotSize').val();
-            let orderPrice = $('#orderForm-cnc-price').val();
-            let orderMode = "cnc";
-            let transactionType = "buy";
-            let orderType = "market";
-            if (document.getElementById('orderType-cnc-market').checked) {
-                orderType = "market";
-            }
-            if (document.getElementById('orderType-cnc-limit').checked) {
-                orderType = "limit";
-            }
-            socket.emit("transact", { ttype: transactionType, symbol: companyCode, name: companyName, quantity: orderQuantity, lotSize: orderLotSize, mode: orderMode, atPrice: orderPrice, otype: orderType });
-        });
-
-        $('#sell-cnc').click(function () {
-            let companyName = $('#orderForm-cnc-companyName').val();
-            let companyCode = $('#orderForm-cnc-companyCode').val();
-            let orderQuantity = $('#orderForm-cnc-quantity').val();
-            let orderLotSize = $('#orderForm-cnc-lotSize').val();
-            let orderPrice = $('#orderForm-cnc-price').val();
-            let orderMode = "cnc";
-            let transactionType = "sell";
-            let orderType = "market";
-            if (document.getElementById('orderType-cnc-market').checked) {
-                orderType = "market";
-            }
-            if (document.getElementById('orderType-cnc-limit').checked) {
-                orderType = "limit";
-            }
-            socket.emit("transact", { ttype: transactionType, symbol: companyCode, name: companyName, quantity: orderQuantity, lotSize: orderLotSize, mode: orderMode, atPrice: orderPrice, otype: orderType });
-        });
-
-        $('#buy-mis').click(function () {
-            let companyName = $('#orderForm-mis-companyName').val();
-            let companyCode = $('#orderForm-mis-companyCode').val();
-            let orderQuantity = $('#orderForm-mis-quantity').val();
-            let orderLotSize = $('#orderForm-mis-lotSize').val();
-            let orderPrice = $('#orderForm-mis-price').val();
-            let orderMode = "mis";
-            let transactionType = "buy";
-            let orderType = "market";
-            if (document.getElementById('orderType-mis-market').checked) {
-                orderType = "market";
-            }
-            if (document.getElementById('orderType-mis-limit').checked) {
-                orderType = "limit";
-            }
-            socket.emit("transact", { ttype: transactionType, symbol: companyCode, name: companyName, quantity: orderQuantity, lotSize: orderLotSize, mode: orderMode, atPrice: orderPrice, otype: orderType });
-        });
-
-        $('#sell-mis').click(function () {
-            let companyName = $('#orderForm-mis-companyName').val();
-            let companyCode = $('#orderForm-mis-companyCode').val();
-            let orderQuantity = $('#orderForm-mis-quantity').val();
-            let orderLotSize = $('#orderForm-mis-lotSize').val();
-            let orderPrice = $('#orderForm-mis-price').val();
-            let orderMode = "mis";
-            let transactionType = "sell";
-            let orderType = "market";
-            if (document.getElementById('orderType-mis-market').checked) {
-                orderType = "market";
-            }
-            if (document.getElementById('orderType-mis-limit').checked) {
-                orderType = "limit";
-            }
-            socket.emit("transact", { ttype: transactionType, symbol: companyCode, name: companyName, quantity: orderQuantity, lotSize: orderLotSize, mode: orderMode, atPrice: orderPrice, otype: orderType });
-        });
-
-        $('#orderType-cnc-limit').click(function () {
-            $('#orderForm-cnc-price').removeAttr('disabled');
-        });
-
-        $('#orderType-cnc-market').click(function () {
-            $('#orderForm-cnc-price').attr('disabled', 'true');
-        });
-
-        $('#orderType-mis-limit').click(function () {
-            $('#orderForm-mis-price').removeAttr('disabled');
-        });
-
-        $('#orderType-mis-market').click(function () {
-            $('#orderForm-mis-price').attr('disabled', 'true');
-        });
+        document.getElementById(marketPriceElementID).innerText = quote.marketPrice;
+        document.getElementById(marketPriceChangeElementID).innerText = change;
+        document.getElementById(marketPriceChangeElementID).className = "text-" + quote.badgeClassName;
+        document.getElementById(marketPriceChangePercentArrowElementID).className = "fas fa-arrow-" + quote.arrowType;
+        document.getElementById(marketPriceChangePercentElementID).innerText = quote.marketPriceChangePercent + "%";
+        document.getElementById(marketPriceChangePercentBadgeElementID).className = "badge bg-" + quote.badgeClassName;
+      });
 
     });
+
+    socket.on("transaction successful", (transaction) => {
+      const {
+        id,
+        ttype,
+        symbol,
+        name,
+        atPrice,
+        remainingBalance
+      } = transaction;
+      const transactionMessage = "Transaction successful : " + id + " - " + ttype +
+        " " +
+        name +
+        "(" +
+        symbol +
+        ") at " +
+        atPrice;
+      notify(transactionMessage, ttype);
+      document.getElementById(id + "-orderStatusBadge").classList.remove('bg-warning');
+      document.getElementById(id + "-orderStatusBadge").classList.add('bg-success');
+      document.getElementById(id + "-orderStatusBadge").innerText = "Complete";
+      document.getElementById(id + "-orderID").innerText = id;
+      document.getElementById("wallet-balance").innerText = remainingBalance;
+    });
+
+    socket.on("transaction rejected", (transaction) => {
+      const {
+        id,
+        ttype,
+        symbol,
+        name,
+        atPrice,
+      } = transaction;
+      //   const transactionMessage = "Transaction rejected : " + id + " - " + ttype +
+      //     " " +
+      //     name +
+      //     "(" +
+      //     symbol +
+      //     ") at " +
+      //     atPrice;
+      const transactionMessage = "Insufficient Holdings";
+      notify(transactionMessage, "sell");
+      document.getElementById(id + "-orderStatusBadge").classList.remove('bg-warning');
+      document.getElementById(id + "-orderStatusBadge").classList.add('bg-danger');
+      document.getElementById(id + "-orderStatusBadge").innerText = "Rejected";
+      document.getElementById(id + "-orderID").innerText = id;
+    });
+
+    socket.on("transaction queued", (transaction) => {
+      const {
+        id,
+        ttype,
+        symbol,
+        name,
+        quantity,
+        lotSize,
+        mode,
+        atPrice,
+        otype
+      } = transaction;
+      const transactionMessage = "Order submitted to exchange : " + id + " - " + ttype +
+        " " +
+        name +
+        "(" +
+        symbol +
+        ") at " +
+        atPrice;
+      notify(transactionMessage, "queue");
+
+      let orderTypeBadge = otype == "market" ? "<span class='badge bg-primary'>M</span>" : "<span class='badge bg-secondary'>L</span>";
+      let transactionTypeBadge = ttype == "buy" ? "<span class='badge bg-success'>B</span>" : "<span class='badge bg-danger'>S</span>";
+
+      $('#leaderboard-list').prepend("<div><a href='#' class='list-group-item list-group-item-action' aria-current='true'><div class='d-flex w-100 justify-content-between'><h6>" + name + "</h6><span id='" + id + "-orderStatusBadge' class='badge bg-warning' style='margin-bottom: 10px;'>Pending</span></div><div class='d-flex w-100 justify-content-between'><small>" + quantity + " @ &#8377;" + atPrice + "</small>" + orderTypeBadge + transactionTypeBadge + "<span class='badge bg-warning text-dark'>" + mode.toUpperCase() + "</span></div><div class='d-flex w-100 justify-content-between' style='padding-top: 10px;'><small>ID : </small><small id='" + id + "-orderID'></small></div></a></div>");
+    });
+
+    $('#buy-cnc').click(function() {
+      let companyName = $('#orderForm-cnc-companyName').val();
+      let companyCode = $('#orderForm-cnc-companyCode').val();
+      let orderQuantity = $('#orderForm-cnc-quantity').val();
+      let orderLotSize = $('#orderForm-cnc-lotSize').val();
+      let orderPrice = $('#orderForm-cnc-price').val();
+      let orderMode = "cnc";
+      let transactionType = "buy";
+      let orderType = "market";
+      let walletBalance = document.getElementById("wallet-balance").innerText;
+      let userID = document.getElementById("userID").value;
+
+      if (document.getElementById('orderType-cnc-market').checked) {
+        orderType = "market";
+      }
+      if (document.getElementById('orderType-cnc-limit').checked) {
+        orderType = "limit";
+      }
+
+      if (orderQuantity * orderPrice > walletBalance) {
+        notify("Insufficient Wallet Balance", "sell");
+      } else {
+        socket.emit("transact", {
+          ttype: transactionType,
+          symbol: companyCode,
+          name: companyName,
+          quantity: orderQuantity,
+          lotSize: orderLotSize,
+          mode: orderMode,
+          atPrice: orderPrice,
+          otype: orderType,
+          balance: walletBalance,
+          userID: userID
+        });
+      }
+    });
+
+    $('#sell-cnc').click(function() {
+      let companyName = $('#orderForm-cnc-companyName').val();
+      let companyCode = $('#orderForm-cnc-companyCode').val();
+      let orderQuantity = $('#orderForm-cnc-quantity').val();
+      let orderLotSize = $('#orderForm-cnc-lotSize').val();
+      let orderPrice = $('#orderForm-cnc-price').val();
+      let orderMode = "cnc";
+      let transactionType = "sell";
+      let orderType = "market";
+      let walletBalance = document.getElementById("wallet-balance").innerText;
+      let userID = document.getElementById("userID").value;
+      if (document.getElementById('orderType-cnc-market').checked) {
+        orderType = "market";
+      }
+      if (document.getElementById('orderType-cnc-limit').checked) {
+        orderType = "limit";
+      }
+
+      socket.emit("transact", {
+        ttype: transactionType,
+        symbol: companyCode,
+        name: companyName,
+        quantity: orderQuantity,
+        lotSize: orderLotSize,
+        mode: orderMode,
+        atPrice: orderPrice,
+        otype: orderType,
+        balance: walletBalance,
+        userID: userID
+      });
+
+    });
+
+    $('#buy-mis').click(function() {
+      let companyName = $('#orderForm-mis-companyName').val();
+      let companyCode = $('#orderForm-mis-companyCode').val();
+      let orderQuantity = $('#orderForm-mis-quantity').val();
+      let orderLotSize = $('#orderForm-mis-lotSize').val();
+      let orderPrice = $('#orderForm-mis-price').val();
+      let orderMode = "mis";
+      let transactionType = "buy";
+      let orderType = "market";
+
+      if (document.getElementById('orderType-mis-market').checked) {
+        orderType = "market";
+      }
+      if (document.getElementById('orderType-mis-limit').checked) {
+        orderType = "limit";
+      }
+      if (orderQuantity * orderPrice > walletBalance) {
+        notify("Insufficient Wallet Balance", "sell");
+      } else {
+        socket.emit("transact", {
+          ttype: transactionType,
+          symbol: companyCode,
+          name: companyName,
+          quantity: orderQuantity,
+          lotSize: orderLotSize,
+          mode: orderMode,
+          atPrice: orderPrice,
+          otype: orderType
+        });
+      }
+    });
+
+    $('#sell-mis').click(function() {
+      let companyName = $('#orderForm-mis-companyName').val();
+      let companyCode = $('#orderForm-mis-companyCode').val();
+      let orderQuantity = $('#orderForm-mis-quantity').val();
+      let orderLotSize = $('#orderForm-mis-lotSize').val();
+      let orderPrice = $('#orderForm-mis-price').val();
+      let orderMode = "mis";
+      let transactionType = "sell";
+      let orderType = "market";
+      if (document.getElementById('orderType-mis-market').checked) {
+        orderType = "market";
+      }
+      if (document.getElementById('orderType-mis-limit').checked) {
+        orderType = "limit";
+      }
+
+      socket.emit("transact", {
+        ttype: transactionType,
+        symbol: companyCode,
+        name: companyName,
+        quantity: orderQuantity,
+        lotSize: orderLotSize,
+        mode: orderMode,
+        atPrice: orderPrice,
+        otype: orderType
+      });
+    });
+
+    $('#orderType-cnc-limit').click(function() {
+      $('#orderForm-cnc-price').removeAttr('disabled');
+    });
+
+    $('#orderType-cnc-market').click(function() {
+      $('#orderForm-cnc-price').attr('disabled', 'true');
+    });
+
+    $('#orderType-mis-limit').click(function() {
+      $('#orderForm-mis-price').removeAttr('disabled');
+    });
+
+    $('#orderType-mis-market').click(function() {
+      $('#orderForm-mis-price').attr('disabled', 'true');
+    });
+
+  });
 </script>
 
 <script type="text/javascript">
-    function reply_click(clicked_id, action) {
-        var socket = io();
-        var quoteSymbol = clicked_id.substring(0, clicked_id.indexOf("-"))
-        var priceElement = quoteSymbol.concat("-marketPrice");
-        var quoteNameElement = quoteSymbol.concat("-quoteName");
-        var price = document.getElementById(priceElement).innerText;
-        var quoteName = document.getElementById(quoteNameElement).innerText;
-        const transactionQueueMessage = "Transaction queued : " + action +
-            " " +
-            quoteName +
-            "(" +
-            quoteSymbol +
-            ") at " +
-            price;
-        notify(transactionQueueMessage, "queue");
-        socket.emit("transact", { type: action, symbol: quoteSymbol, name: quoteName, atPrice: price });
-        // $("#modalLaunch").click();
-        // alert(price);
-        // alert(action + " " + quoteName + " at " + price);
-        // notify(action.concat(" ").concat(quoteName).concat(" at ").concat(price));
-        // alert(quoteName);
-    }
+  function reply_click(clicked_id, action) {
+    var socket = io();
+    var quoteSymbol = clicked_id.substring(0, clicked_id.indexOf("-"))
+    var priceElement = quoteSymbol.concat("-marketPrice");
+    var quoteNameElement = quoteSymbol.concat("-quoteName");
+    var price = document.getElementById(priceElement).innerText;
+    var quoteName = document.getElementById(quoteNameElement).innerText;
+    const transactionQueueMessage = "Transaction queued : " + action +
+      " " +
+      quoteName +
+      "(" +
+      quoteSymbol +
+      ") at " +
+      price;
+    notify(transactionQueueMessage, "queue");
+    socket.emit("transact", {
+      type: action,
+      symbol: quoteSymbol,
+      name: quoteName,
+      atPrice: price
+    });
+    // $("#modalLaunch").click();
+    // alert(price);
+    // alert(action + " " + quoteName + " at " + price);
+    // notify(action.concat(" ").concat(quoteName).concat(" at ").concat(price));
+    // alert(quoteName);
+  }
 
-    function fillOrderForm(companyID) {
-        document.getElementById("orderForm-cnc-companyName").value = document.getElementById(companyID + "-quoteName").innerText;
-        document.getElementById("orderForm-cnc-price").value = document.getElementById(companyID + "-marketPrice").innerText;
-        document.getElementById("orderForm-cnc-companyCode").value = companyID;
-        document.getElementById("orderForm-mis-companyName").value = document.getElementById(companyID + "-quoteName").innerText;
-        document.getElementById("orderForm-mis-price").value = document.getElementById(companyID + "-marketPrice").innerText;
-        document.getElementById("orderForm-mis-companyCode").value = companyID;
-        // alert(companyID);
+  function fillOrderForm(companyID) {
+    document.getElementById("orderForm-cnc-companyName").value = document.getElementById(companyID + "-quoteName").innerText;
+    document.getElementById("orderForm-cnc-price").value = document.getElementById(companyID + "-marketPrice").innerText;
+    document.getElementById("orderForm-cnc-companyCode").value = companyID;
+    document.getElementById("orderForm-mis-companyName").value = document.getElementById(companyID + "-quoteName").innerText;
+    document.getElementById("orderForm-mis-price").value = document.getElementById(companyID + "-marketPrice").innerText;
+    document.getElementById("orderForm-mis-companyCode").value = companyID;
+    // alert(companyID);
 
-    }
-    // $("#hemhe").click(function () {
-    //     alert(event.srcElement.id);
-    // })
+  }
+  // $("#hemhe").click(function () {
+  //     alert(event.srcElement.id);
+  // })
 </script>
 
 <!-- <script src="https://www.jsdelivr.com/package/npm/chart.js"></script> -->
-<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.4/Chart.js">
+<!-- <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.4/Chart.js"> -->
 </script>
 <!-- <script>
     // var Chart = require('chart.js');
@@ -289,8 +393,6 @@
 </script> -->
 
 <script type="text/javascript">
-
-
 
 
 
