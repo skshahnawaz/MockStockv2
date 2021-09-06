@@ -179,18 +179,20 @@
       if (orderQuantity * orderPrice > walletBalance) {
         notify("Insufficient Wallet Balance", "sell");
       } else {
-        socket.emit("transact", {
-          ttype: transactionType,
-          symbol: companyCode,
-          name: companyName,
-          quantity: orderQuantity,
-          lotSize: orderLotSize,
-          mode: orderMode,
-          atPrice: orderPrice,
-          otype: orderType,
-          balance: walletBalance,
-          userID: userID
-        });
+        if (companyCode !== "Select stock") {
+          socket.emit("transact", {
+            ttype: transactionType,
+            symbol: companyCode,
+            name: companyName,
+            quantity: orderQuantity,
+            lotSize: orderLotSize,
+            mode: orderMode,
+            atPrice: orderPrice,
+            otype: orderType,
+            balance: walletBalance,
+            userID: userID
+          });
+        }
       }
     });
 
@@ -212,18 +214,20 @@
         orderType = "limit";
       }
 
-      socket.emit("transact", {
-        ttype: transactionType,
-        symbol: companyCode,
-        name: companyName,
-        quantity: orderQuantity,
-        lotSize: orderLotSize,
-        mode: orderMode,
-        atPrice: orderPrice,
-        otype: orderType,
-        balance: walletBalance,
-        userID: userID
-      });
+      if (companyCode !== "Select stock") {
+        socket.emit("transact", {
+          ttype: transactionType,
+          symbol: companyCode,
+          name: companyName,
+          quantity: orderQuantity,
+          lotSize: orderLotSize,
+          mode: orderMode,
+          atPrice: orderPrice,
+          otype: orderType,
+          balance: walletBalance,
+          userID: userID
+        });
+      }
 
     });
 
