@@ -1,6 +1,7 @@
 const LocalStrategy = require("passport-local").Strategy;
 const bcrypt = require("bcrypt");
 const User = require("../models/user");
+var moment = require("moment");
 
 module.exports = function (passport) {
   passport.use(
@@ -19,7 +20,19 @@ module.exports = function (passport) {
 
             if (isMatch) {
               if (user.eventsRegistered.includes("61264025c6c5770016243f98")) {
-                return done(null, user);
+                let a = moment("09:15:00", "hh:mm:ss");
+                let b = moment("15:30:00", "hh:mm:ss");
+                let c = moment();
+                console.log(a);
+                console.log(b);
+                console.log(c);
+                if (moment(c).isBetween(a, b)) {
+                  return done(null, user);
+                } else {
+                  return done(null, false, {
+                    message: "Trading hours over",
+                  });
+                }
               } else {
                 return done(null, false, {
                   message: "Not Registered for MockStock",

@@ -178,6 +178,7 @@ io.on("connection", async function (socket) {
     // transaction.id = uuidv4();
     // console.log(transaction);
     transaction.id = ObjectId(newTrade._id).toString();
+    transaction.userID = userID;
     io.emit("transaction queued", transaction);
 
     newTrade.save().then((value) => {
@@ -349,4 +350,4 @@ setInterval(async function () {
   // });
   // io.emit("update prices", { quoteList: quotes });
   // console.log(quotes);
-}, 1000);
+}, 3000);

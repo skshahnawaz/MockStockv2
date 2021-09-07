@@ -108,9 +108,20 @@ router.get("/leaderboard", ensureAuthenticated, async (req, res) => {
         for (let i = 0; i < holdings.length; i++) {
           let memberId = holdings[i].heldBy;
           let registeredUser = await User.findById(memberId.trim());
+          let networth = holdings[i].quantity;
+          let userHoldings = await Holding.find({
+            companyCode: { $ne: "WALLETCASH" },
+            heldBy: memberId.trim(),
+          });
+
+          // console.log(userHoldings);
+          for (let k = 0; k < userHoldings.length; k++) {
+            networth += userHoldings[k].quantity;
+          }
+          // console.log(networth);
           memberList.push({
             userDetails: registeredUser,
-            walletWorth: holdings[i].quantity,
+            walletWorth: networth,
           });
         }
         res.render("pages/leaderboard", {

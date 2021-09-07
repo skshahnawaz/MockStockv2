@@ -161,6 +161,7 @@
         <div class="col-lg-4">
           <div class="container py-2" style="overflow: auto;">
             <h4 class="text-center">Your Watchlist</h4>
+            <h6 class="text-center">Click on a stock and fill the order form</h6>
             <div class="list-group overflow-auto" style="overflow-y: scroll;">
               <% quotes.forEach(function(quote) { %>
               <div id="<%= quote.id %>-watchlistItem" onclick="fillOrderForm('<%=quote.id %>')">
@@ -245,6 +246,7 @@
               <section class="mb-4">
                 <div class="card">
                   <h5 class="text-center card-header">Your Holdings</h5>
+                  <small class="text-center">Please refresh the page to update holdings</small>
                   <div class="list-group-leaderboard" id="holdings-list" style=" overflow-y: auto;">
                     <% holdings.forEach((holding) => { %>
                     <div id="<%= holding.id %>-holdingItem">

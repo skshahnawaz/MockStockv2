@@ -53,6 +53,9 @@
   $(document).ready(function() {
     var socket = io();
 
+    var loggedinUserID = '<%=user._id%>';
+    // notify(loggedinUserID, "queue");
+
     // $("#add_status").click(function () {
     //     socket.emit('status added', $("#comment").val());
     // });
@@ -90,21 +93,25 @@
         symbol,
         name,
         atPrice,
-        remainingBalance
+        remainingBalance,
+        userID
       } = transaction;
-      const transactionMessage = "Transaction successful : " + id + " - " + ttype +
-        " " +
-        name +
-        "(" +
-        symbol +
-        ") at " +
-        atPrice;
-      notify(transactionMessage, ttype);
-      document.getElementById(id + "-orderStatusBadge").classList.remove('bg-warning');
-      document.getElementById(id + "-orderStatusBadge").classList.add('bg-success');
-      document.getElementById(id + "-orderStatusBadge").innerText = "Complete";
-      document.getElementById(id + "-orderID").innerText = id;
-      document.getElementById("wallet-balance").innerText = remainingBalance;
+
+      if (loggedinUserID == userID) {
+        const transactionMessage = "Transaction successful : " + id + " - " + ttype +
+          " " +
+          name +
+          "(" +
+          symbol +
+          ") at " +
+          atPrice;
+        notify(transactionMessage, ttype);
+        document.getElementById(id + "-orderStatusBadge").classList.remove('bg-warning');
+        document.getElementById(id + "-orderStatusBadge").classList.add('bg-success');
+        document.getElementById(id + "-orderStatusBadge").innerText = "Complete";
+        document.getElementById(id + "-orderID").innerText = id;
+        document.getElementById("wallet-balance").innerText = remainingBalance;
+      }
     });
 
     socket.on("transaction rejected", (transaction) => {
@@ -114,6 +121,7 @@
         symbol,
         name,
         atPrice,
+        userID
       } = transaction;
       //   const transactionMessage = "Transaction rejected : " + id + " - " + ttype +
       //     " " +
@@ -122,12 +130,14 @@
       //     symbol +
       //     ") at " +
       //     atPrice;
-      const transactionMessage = "Insufficient Holdings";
-      notify(transactionMessage, "sell");
-      document.getElementById(id + "-orderStatusBadge").classList.remove('bg-warning');
-      document.getElementById(id + "-orderStatusBadge").classList.add('bg-danger');
-      document.getElementById(id + "-orderStatusBadge").innerText = "Rejected";
-      document.getElementById(id + "-orderID").innerText = id;
+      if (loggedinUserID == userID) {
+        const transactionMessage = "Insufficient Holdings";
+        notify(transactionMessage, "sell");
+        document.getElementById(id + "-orderStatusBadge").classList.remove('bg-warning');
+        document.getElementById(id + "-orderStatusBadge").classList.add('bg-danger');
+        document.getElementById(id + "-orderStatusBadge").innerText = "Rejected";
+        document.getElementById(id + "-orderID").innerText = id;
+      }
     });
 
     socket.on("transaction queued", (transaction) => {
@@ -140,21 +150,24 @@
         lotSize,
         mode,
         atPrice,
-        otype
+        otype,
+        userID
       } = transaction;
-      const transactionMessage = "Order submitted to exchange : " + id + " - " + ttype +
-        " " +
-        name +
-        "(" +
-        symbol +
-        ") at " +
-        atPrice;
-      notify(transactionMessage, "queue");
+      if (loggedinUserID == userID) {
+        const transactionMessage = "Order submitted to exchange : " + id + " - " + ttype +
+          " " +
+          name +
+          "(" +
+          symbol +
+          ") at " +
+          atPrice;
+        notify(transactionMessage, "queue");
 
-      let orderTypeBadge = otype == "market" ? "<span class='badge bg-primary'>M</span>" : "<span class='badge bg-secondary'>L</span>";
-      let transactionTypeBadge = ttype == "buy" ? "<span class='badge bg-success'>B</span>" : "<span class='badge bg-danger'>S</span>";
+        let orderTypeBadge = otype == "market" ? "<span class='badge bg-primary'>M</span>" : "<span class='badge bg-secondary'>L</span>";
+        let transactionTypeBadge = ttype == "buy" ? "<span class='badge bg-success'>B</span>" : "<span class='badge bg-danger'>S</span>";
 
-      $('#leaderboard-list').prepend("<div><a href='#' class='list-group-item list-group-item-action' aria-current='true'><div class='d-flex w-100 justify-content-between'><h6>" + name + "</h6><span id='" + id + "-orderStatusBadge' class='badge bg-warning' style='margin-bottom: 10px;'>Pending</span></div><div class='d-flex w-100 justify-content-between'><small>" + quantity + " @ &#8377;" + atPrice + "</small>" + orderTypeBadge + transactionTypeBadge + "<span class='badge bg-warning text-dark'>" + mode.toUpperCase() + "</span></div><div class='d-flex w-100 justify-content-between' style='padding-top: 10px;'><small>ID : </small><small id='" + id + "-orderID'></small></div></a></div>");
+        $('#leaderboard-list').prepend("<div><a href='#' class='list-group-item list-group-item-action' aria-current='true'><div class='d-flex w-100 justify-content-between'><h6>" + name + "</h6><span id='" + id + "-orderStatusBadge' class='badge bg-warning' style='margin-bottom: 10px;'>Pending</span></div><div class='d-flex w-100 justify-content-between'><small>" + quantity + " @ &#8377;" + atPrice + "</small>" + orderTypeBadge + transactionTypeBadge + "<span class='badge bg-warning text-dark'>" + mode.toUpperCase() + "</span></div><div class='d-flex w-100 justify-content-between' style='padding-top: 10px;'><small>ID : </small><small id='" + id + "-orderID'></small></div></a></div>");
+      }
     });
 
     $('#buy-cnc').click(function() {
