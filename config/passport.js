@@ -29,9 +29,10 @@ module.exports = function (passport) {
                 if (moment(c).isBetween(a, b)) {
                   return done(null, user);
                 } else {
-                  return done(null, false, {
-                    message: "Trading hours over",
-                  });
+                  // return done(null, false, {
+                  //   message: "Trading hours over",
+                  // });
+                  return done(null, user);
                 }
               } else {
                 return done(null, false, {

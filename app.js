@@ -110,7 +110,6 @@ app.use((req, res, next) => {
 });
 
 // use res.render to load up an ejs view file
-
 //Routes
 app.use("/", require("./routes/index"));
 app.use("/users", require("./routes/users"));
