@@ -20,9 +20,9 @@ module.exports = function (passport) {
 
             if (isMatch) {
               if (user.eventsRegistered.includes("61264025c6c5770016243f98")) {
-                let a = moment("09:15:00", "hh:mm:ss");
-                let b = moment("15:30:00", "hh:mm:ss");
-                let c = moment();
+                let a = moment.utc("09:15:00", "hh:mm:ss").utcOffset("+05:30");
+                let b = moment.utc("15:30:00", "hh:mm:ss").utcOffset("+05:30");
+                let c = moment.utc().utcOffset("+05:30");
                 console.log(a);
                 console.log(b);
                 console.log(c);

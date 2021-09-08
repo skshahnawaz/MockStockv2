@@ -6,6 +6,7 @@ const { ObjectId } = require("mongodb");
 const User = require("../models/user.js");
 const Trade = require("../models/trade.js");
 const Holding = require("../models/holding.js");
+var moment = require("moment");
 
 const symbols = [
   "WIPRO.NS",
@@ -118,6 +119,7 @@ router.get("/leaderboard", ensureAuthenticated, async (req, res) => {
           for (let k = 0; k < userHoldings.length; k++) {
             networth += userHoldings[k].quantity;
           }
+
           // console.log(networth);
           memberList.push({
             userDetails: registeredUser,
