@@ -349,4 +349,4 @@ setInterval(async function () {
   // });
   // io.emit("update prices", { quoteList: quotes });
   // console.log(quotes);
-}, 3000);
+}, 1000);
