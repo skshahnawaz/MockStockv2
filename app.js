@@ -17,7 +17,7 @@ const socket = require("socket.io");
 const Trade = require("./models/trade.js");
 const Holding = require("./models/holding.js");
 
-app.use(express.json()); //Used to parse JSON bodies
+app.use(express.json()); //Used to parse JSON body
 
 // const symbols = [
 //   "TCS.NS",
