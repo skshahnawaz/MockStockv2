@@ -126,10 +126,13 @@ const server = app.listen(port, () => {
 });
 
 // try {
-//   Trade.deleteMany({ tradedBy: "612bb44239b610001643d593" }, function (err) {
-//     if (err) console.log(err);
-//     console.log("Successful deletion");
-//   });
+//   Holding.deleteMany(
+//     { date: { $gte: new Date("2021-09-13T03:40:01.946+00:00") } },
+//     function (err) {
+//       if (err) console.log(err);
+//       console.log("Successful deletion");
+//     }
+//   );
 // } catch (e) {
 //   console.log(e);
 // }
