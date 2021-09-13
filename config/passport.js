@@ -22,7 +22,7 @@ module.exports = function (passport) {
 
             if (isMatch) {
               if (user.eventsRegistered.includes("61264025c6c5770016243f98")) {
-                // let sessionId = uuidv4();
+                let sessionId = uuidv4();
                 let loggedInStatus = await LoggedInUser.findOne({
                   userId: user._id,
                 });
@@ -40,7 +40,7 @@ module.exports = function (passport) {
                   console.log(b);
                   console.log(c);
                   // user.sessionId = sessionId;
-                  console.log(user);
+                  // console.log(user);
                   if (moment(c).isBetween(a, b)) {
                     return done(null, user);
                   } else {
@@ -51,12 +51,26 @@ module.exports = function (passport) {
                   }
                 } else {
                   if (loggedInStatus.loginStatus == 1) {
-                    console.log("Already logged in user");
-                    return done(null, false, {
-                      message:
-                        "Multiple login sessions detected. Please logout from previous session",
-                    });
+                    // user.sessionId = uuidv4();
+                    console.log("Login status 1");
+                    // console.log(uuidv4());
+                    return done(null, user);
+                    // LoggedInUser.findOneAndUpdate(
+                    //   { userId: user._id },
+                    //   { loginStatus: 0, sessionId: uuidv4() },
+                    //   { new: true }
+                    // ).exec((err, newStatus) => {
+                    //   return done(null, user);
+                    // });
+                    // console.log("Already logged in user");
+                    // return done(null, false, {
+                    //   message:
+                    //     "Multiple login sessions detected. Please logout from previous session",
+                    // });
                   } else {
+                    // user.sessionId = uuidv4();
+                    console.log("Login status 0");
+                    // console.log(user.sessionId);
                     return done(null, user);
                   }
                 }

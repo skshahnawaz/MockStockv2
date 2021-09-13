@@ -54,6 +54,7 @@
     var socket = io();
 
     var loggedinUserID = '<%=user._id%>';
+    var usessionId = '<%=sessionId%>';
     // notify(loggedinUserID, "queue");
 
     // $("#add_status").click(function () {
@@ -84,6 +85,15 @@
         document.getElementById(marketPriceChangePercentBadgeElementID).className = "badge bg-" + quote.badgeClassName;
       });
 
+    });
+
+    socket.on("incorrect session", (transaction) => {
+      const {
+        userID,
+        usersessionId
+      } = transaction;
+      if (loggedinUserID === userID && usersessionId === usessionId)
+        notify("Logged in from another session. No more trades permitted from this session", "sell");
     });
 
     socket.on("transaction successful", (transaction) => {
@@ -193,6 +203,7 @@
         notify("Insufficient Wallet Balance", "sell");
       } else {
         if (companyCode !== "Select stock") {
+          // let usersessionId = document.getElementById("loggedInSessionId").value;
           socket.emit("transact", {
             ttype: transactionType,
             symbol: companyCode,
@@ -203,7 +214,8 @@
             atPrice: orderPrice,
             otype: orderType,
             balance: walletBalance,
-            userID: userID
+            userID: userID,
+            usersessionId: usessionId
           });
         }
       }
@@ -228,6 +240,7 @@
       }
 
       if (companyCode !== "Select stock") {
+        // let usersessionId = document.getElementById("loggedInSessionId").value;
         socket.emit("transact", {
           ttype: transactionType,
           symbol: companyCode,
@@ -238,7 +251,8 @@
           atPrice: orderPrice,
           otype: orderType,
           balance: walletBalance,
-          userID: userID
+          userID: userID,
+          usersessionId: usessionId
         });
       }
 

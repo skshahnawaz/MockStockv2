@@ -7,6 +7,7 @@ const User = require("../models/user.js");
 const Trade = require("../models/trade.js");
 const Holding = require("../models/holding.js");
 const LoggedInUser = require("../models/loggedinuser.js");
+const { v4: uuidv4 } = require("uuid");
 var moment = require("moment");
 
 const symbols = [
@@ -172,6 +173,7 @@ router.get("/dashboard", ensureAuthenticated, async (req, res) => {
         if (err) {
           console.log(err);
         }
+        let sessId = uuidv4();
         if (!holding) {
           let newHolding = new Holding({
             heldBy: req.user._id,
@@ -181,6 +183,8 @@ router.get("/dashboard", ensureAuthenticated, async (req, res) => {
           let newLogin = new LoggedInUser({
             userId: req.user._id,
             loginStatus: 1,
+            // sessionId: req.user.sessionId,
+            sessionId: sessId,
           });
           newHolding.save().then(async (result) => {
             let loginres = await newLogin.save();
@@ -191,14 +195,19 @@ router.get("/dashboard", ensureAuthenticated, async (req, res) => {
               user: req.user,
               holdingAmount: 1500000,
               holdings: [],
+              sessionId: sessId,
             });
           });
         } else {
           Holding.find({
             heldBy: req.user._id,
             companyName: { $ne: "#" },
+            quantity: { $gte: 1 },
           }).exec(async (err, allHoldings) => {
-            console.log(allHoldings);
+            // console.log(allHoldings);
+            if (!allHoldings) {
+              allHoldings = [];
+            }
             let loggedInStatus = await LoggedInUser.findOne({
               userId: req.user._id,
             });
@@ -206,19 +215,22 @@ router.get("/dashboard", ensureAuthenticated, async (req, res) => {
               let newLogin = new LoggedInUser({
                 userId: req.user._id,
                 loginStatus: 1,
+                sessionId: sessId,
               });
               let loginres = await newLogin.save();
+
               res.render("pages/index4", {
                 quotes: quotes,
                 marketState: quotes[0].marketState,
                 user: req.user,
                 holdingAmount: holding.quantity,
                 holdings: allHoldings,
+                sessionId: sessId,
               });
             } else {
               LoggedInUser.findOneAndUpdate(
                 { userId: req.user._id },
-                { loginStatus: 1 },
+                { loginStatus: 1, sessionId: sessId },
                 { new: true }
               ).exec((err, newStatus) => {
                 if (err) {
@@ -230,6 +242,7 @@ router.get("/dashboard", ensureAuthenticated, async (req, res) => {
                     user: req.user,
                     holdingAmount: holding.quantity,
                     holdings: allHoldings,
+                    sessionId: sessId,
                   });
                 }
               });

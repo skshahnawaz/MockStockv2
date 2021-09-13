@@ -16,6 +16,7 @@ const socket = require("socket.io");
 // var Chart = require("chart.js");
 const Trade = require("./models/trade.js");
 const Holding = require("./models/holding.js");
+const LoggedInUser = require("./models/loggedinuser.js");
 
 app.use(express.json()); //Used to parse JSON bodies
 
@@ -138,7 +139,7 @@ const io = socket(server);
 io.on("connection", async function (socket) {
   console.log("user connected : ", socket.id);
 
-  socket.on("transact", (transaction) => {
+  socket.on("transact", async (transaction) => {
     const {
       ttype,
       symbol,
@@ -150,98 +151,84 @@ io.on("connection", async function (socket) {
       otype,
       balance,
       userID,
+      usersessionId,
     } = transaction;
 
     console.log("User ID : ", userID);
 
-    console.log("Initial balance :" + balance);
-    var remainingBalance;
-
-    console.log(
-      "Transaction initiated : " +
-        ttype +
-        " " +
-        name +
-        "(" +
-        symbol +
-        ") at " +
-        atPrice +
-        " " +
-        otype +
-        " " +
-        mode
-    );
-
-    var newTrade = new Trade({
-      orderType: otype.toUpperCase(),
-      orderMode: mode.toUpperCase(),
-      companyName: name,
-      companyCode: symbol,
-      transactionType: ttype.toUpperCase(),
-      quantity: quantity,
-      price: atPrice,
-      tradedBy: userID,
+    let loggedIn = await LoggedInUser.findOne({
+      userId: userID,
     });
+    let loggedInSessionId = loggedIn.sessionId;
+    console.log(loggedInSessionId);
 
-    // transaction.id = uuidv4();
-    // console.log(transaction);
-    transaction.id = ObjectId(newTrade._id).toString();
-    transaction.userID = userID;
-    io.emit("transaction queued", transaction);
+    if (loggedInSessionId === usersessionId) {
+      console.log("Session matched");
+      console.log("Initial balance :" + balance);
+      var remainingBalance;
 
-    newTrade.save().then((value) => {
-      // console.log(ObjectId(value._id).toString());
-      // console.log(value);
-      let amt = parseInt(quantity) * parseInt(atPrice);
-      if (ttype.toUpperCase() === "BUY") {
-        remainingBalance = parseInt(balance) - amt;
-        console.log("Remains : ", remainingBalance);
-      } else {
-        remainingBalance = parseInt(balance) + amt;
-        console.log("Remains : ", remainingBalance);
-      }
-      remainingBalance = Math.round(remainingBalance * 100) / 100.0;
-      transaction.remainingBalance = remainingBalance;
-      console.log("Remaining Balance : ", remainingBalance);
+      console.log(
+        "Transaction initiated : " +
+          ttype +
+          " " +
+          name +
+          "(" +
+          symbol +
+          ") at " +
+          atPrice +
+          " " +
+          otype +
+          " " +
+          mode
+      );
 
-      Holding.findOne(
-        { heldBy: userID, companyCode: symbol },
-        async function (err, holdings) {
-          if (err) {
-            console.log("Error : ", err);
-          }
-          if (!holdings && ttype.toUpperCase() === "BUY") {
-            var newHolding = new Holding({
-              companyName: name,
-              companyCode: symbol,
-              quantity: quantity,
-              heldBy: userID,
-            });
-            newHolding.save().then((newHolding) => {
-              console.log("New Holding : ", newHolding);
-              Holding.findOneAndUpdate(
-                { heldBy: userID, companyCode: "WALLETCASH" },
-                {
-                  $inc: { quantity: -amt },
-                },
-                { new: true }
-              ).exec((err, newWallet) => {
-                if (err) {
-                  console.log(err);
-                }
-                console.log("Updated wallet to : ", newWallet);
-                // console.log(newWallet);
+      var newTrade = new Trade({
+        orderType: otype.toUpperCase(),
+        orderMode: mode.toUpperCase(),
+        companyName: name,
+        companyCode: symbol,
+        transactionType: ttype.toUpperCase(),
+        quantity: quantity,
+        price: atPrice,
+        tradedBy: userID,
+      });
+
+      // transaction.id = uuidv4();
+      // console.log(transaction);
+      transaction.id = ObjectId(newTrade._id).toString();
+      transaction.userID = userID;
+      io.emit("transaction queued", transaction);
+
+      newTrade.save().then((value) => {
+        // console.log(ObjectId(value._id).toString());
+        // console.log(value);
+        let amt = parseInt(quantity) * parseInt(atPrice);
+        if (ttype.toUpperCase() === "BUY") {
+          remainingBalance = parseInt(balance) - amt;
+          console.log("Remains : ", remainingBalance);
+        } else {
+          remainingBalance = parseInt(balance) + amt;
+          console.log("Remains : ", remainingBalance);
+        }
+        remainingBalance = Math.round(remainingBalance * 100) / 100.0;
+        transaction.remainingBalance = remainingBalance;
+        console.log("Remaining Balance : ", remainingBalance);
+
+        Holding.findOne(
+          { heldBy: userID, companyCode: symbol },
+          async function (err, holdings) {
+            if (err) {
+              console.log("Error : ", err);
+            }
+            if (!holdings && ttype.toUpperCase() === "BUY") {
+              var newHolding = new Holding({
+                companyName: name,
+                companyCode: symbol,
+                quantity: quantity,
+                heldBy: userID,
               });
-            });
-            sendTransactionReceipt(transaction);
-          } else {
-            if (ttype.toUpperCase() === "BUY") {
-              Holding.findOneAndUpdate(
-                { heldBy: userID, companyCode: symbol },
-                { $inc: { quantity: quantity } },
-                { new: true }
-              ).exec((err, newHolding) => {
-                console.log("Updated Holding : ", newHolding);
+              newHolding.save().then((newHolding) => {
+                console.log("New Holding : ", newHolding);
                 Holding.findOneAndUpdate(
                   { heldBy: userID, companyCode: "WALLETCASH" },
                   {
@@ -257,57 +244,83 @@ io.on("connection", async function (socket) {
                 });
               });
               sendTransactionReceipt(transaction);
-            } else if (ttype.toUpperCase() === "SELL") {
-              Holding.findOne({ heldBy: userID, companyCode: symbol }).exec(
-                (err, existingHolding) => {
-                  console.log("SELL existing : ", existingHolding);
-                  if (!existingHolding) {
-                    console.log("No existing holdings");
-                    rejectTransaction();
-                  } else {
-                    if (quantity > existingHolding.quantity) {
-                      console.log("Existing holdings too less");
+            } else {
+              if (ttype.toUpperCase() === "BUY") {
+                Holding.findOneAndUpdate(
+                  { heldBy: userID, companyCode: symbol },
+                  { $inc: { quantity: quantity } },
+                  { new: true }
+                ).exec((err, newHolding) => {
+                  console.log("Updated Holding : ", newHolding);
+                  Holding.findOneAndUpdate(
+                    { heldBy: userID, companyCode: "WALLETCASH" },
+                    {
+                      $inc: { quantity: -amt },
+                    },
+                    { new: true }
+                  ).exec((err, newWallet) => {
+                    if (err) {
+                      console.log(err);
+                    }
+                    console.log("Updated wallet to : ", newWallet);
+                    // console.log(newWallet);
+                  });
+                });
+                sendTransactionReceipt(transaction);
+              } else if (ttype.toUpperCase() === "SELL") {
+                Holding.findOne({ heldBy: userID, companyCode: symbol }).exec(
+                  (err, existingHolding) => {
+                    console.log("SELL existing : ", existingHolding);
+                    if (!existingHolding) {
+                      console.log("No existing holdings");
                       rejectTransaction();
                     } else {
-                      Holding.findOneAndUpdate(
-                        { heldBy: userID, companyCode: symbol },
-                        { $inc: { quantity: -quantity } },
-                        { new: true }
-                      ).exec((err, newHolding) => {
-                        console.log("Updated Holding : ", newHolding);
+                      if (quantity > existingHolding.quantity) {
+                        console.log("Existing holdings too less");
+                        rejectTransaction();
+                      } else {
                         Holding.findOneAndUpdate(
-                          { heldBy: userID, companyCode: "WALLETCASH" },
-                          {
-                            $inc: { quantity: amt },
-                          },
+                          { heldBy: userID, companyCode: symbol },
+                          { $inc: { quantity: -quantity } },
                           { new: true }
-                        ).exec((err, newWallet) => {
-                          if (err) {
-                            console.log(err);
-                          }
-                          console.log("Updated wallet to : ", newWallet);
-                          // console.log(newWallet);
+                        ).exec((err, newHolding) => {
+                          console.log("Updated Holding : ", newHolding);
+                          Holding.findOneAndUpdate(
+                            { heldBy: userID, companyCode: "WALLETCASH" },
+                            {
+                              $inc: { quantity: amt },
+                            },
+                            { new: true }
+                          ).exec((err, newWallet) => {
+                            if (err) {
+                              console.log(err);
+                            }
+                            console.log("Updated wallet to : ", newWallet);
+                            // console.log(newWallet);
+                          });
                         });
-                      });
-                      sendTransactionReceipt(transaction);
+                        sendTransactionReceipt(transaction);
+                      }
                     }
                   }
-                }
-              );
+                );
+              }
             }
           }
-        }
-      );
-    });
-
-    function sendTransactionReceipt() {
-      io.emit("transaction successful", transaction);
+        );
+      });
+      function sendTransactionReceipt() {
+        io.emit("transaction successful", transaction);
+      }
+      function rejectTransaction() {
+        console.log("rejecting....");
+        io.emit("transaction rejected", transaction);
+      }
+      // setTimeout(sendTransactionReceipt, 3000);
+    } else {
+      console.log("Session mismatch");
+      io.emit("incorrect session", transaction);
     }
-    function rejectTransaction() {
-      console.log("rejecting....");
-      io.emit("transaction rejected", transaction);
-    }
-    // setTimeout(sendTransactionReceipt, 3000);
   });
 
   socket.on("disconnect", () => {

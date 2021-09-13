@@ -13,6 +13,10 @@ const LoggedInUserSchema = new mongoose.Schema({
     type: Number,
     default: 0,
   },
+  sessionId: {
+    type: String,
+    default: "#",
+  },
 });
 
 const LoggedInUser = mongoose.model(
