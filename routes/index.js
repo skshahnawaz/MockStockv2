@@ -76,20 +76,22 @@ router.get("/", async function (req, res) {
 
 // orders page
 router.get("/orders", ensureAuthenticated, async (req, res) => {
-  console.log(req.user._id.toString());
+  // console.log(req.user._id.toString());
   Trade.find({ tradedBy: req.user._id.toString() })
     .sort({ date: -1 })
     .exec(async (err, trades) => {
       if (!trades) {
         res.render("pages/orders", {
           user: req.user,
+          // sessionId: req.params.sessid,
           orders: [],
         });
       } else {
-        console.log(trades);
+        // console.log(trades);
         res.render("pages/orders", {
           user: req.user,
           orders: trades,
+          // sessionId: req.params.sessid,
         });
       }
     });
@@ -106,6 +108,7 @@ router.get("/leaderboard", ensureAuthenticated, async (req, res) => {
         res.render("pages/leaderboard", {
           user: req.user,
           members: [],
+          // sessionId: req.params.sessid,
         });
       } else {
         for (let i = 0; i < holdings.length; i++) {
@@ -141,6 +144,7 @@ router.get("/leaderboard", ensureAuthenticated, async (req, res) => {
         res.render("pages/leaderboard", {
           user: req.user,
           members: memberList,
+          sessionId: req.params.sessid,
         });
       }
     });
@@ -188,7 +192,7 @@ router.get("/dashboard", ensureAuthenticated, async (req, res) => {
           });
           newHolding.save().then(async (result) => {
             let loginres = await newLogin.save();
-            console.log("New Login status : ", loginres);
+            // console.log("New Login status : ", loginres);
             res.render("pages/index4", {
               quotes: quotes,
               marketState: quotes[0].marketState,
