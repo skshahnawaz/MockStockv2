@@ -6,6 +6,7 @@ const { ObjectId } = require("mongodb");
 const User = require("../models/user.js");
 const Trade = require("../models/trade.js");
 const Holding = require("../models/holding.js");
+const LoggedInUser = require("../models/loggedinuser.js");
 var moment = require("moment");
 
 const symbols = [
@@ -61,7 +62,7 @@ const symbols = [
   "IOC.NS",
 ];
 
-async function getPrices() {
+async function getPrices(symbols) {
   const result = await yahooFinance.quote(symbols);
   //   console.log(result);
   return result;
@@ -117,7 +118,16 @@ router.get("/leaderboard", ensureAuthenticated, async (req, res) => {
 
           // console.log(userHoldings);
           for (let k = 0; k < userHoldings.length; k++) {
-            networth += userHoldings[k].quantity;
+            let latestQuote = await yahooFinance.quote(
+              userHoldings[k].companyCode
+            );
+            console.log(
+              userHoldings[k].companyCode +
+                " Price is : " +
+                latestQuote.regularMarketPrice
+            );
+            networth +=
+              userHoldings[k].quantity * latestQuote.regularMarketPrice;
           }
 
           // console.log(networth);
@@ -138,7 +148,7 @@ router.get("/leaderboard", ensureAuthenticated, async (req, res) => {
 router.get("/dashboard", ensureAuthenticated, async (req, res) => {
   var quotes = [];
 
-  const msg = await getPrices().then((result) => {
+  const msg = await getPrices(symbols).then((result) => {
     result.forEach((quote) => {
       quotes.push({
         // id: uuidv4(),
@@ -167,7 +177,13 @@ router.get("/dashboard", ensureAuthenticated, async (req, res) => {
             companyCode: "WALLETCASH",
             quantity: 1500000,
           });
-          newHolding.save().then((result) => {
+          let newLogin = new LoggedInUser({
+            userId: req.user._id,
+            loginStatus: 1,
+          });
+          newHolding.save().then(async (result) => {
+            let loginres = await newLogin.save();
+            console.log("New Login status : ", loginres);
             res.render("pages/index4", {
               quotes: quotes,
               marketState: quotes[0].marketState,
@@ -180,15 +196,43 @@ router.get("/dashboard", ensureAuthenticated, async (req, res) => {
           Holding.find({
             heldBy: req.user._id,
             companyName: { $ne: "#" },
-          }).exec((err, allHoldings) => {
+          }).exec(async (err, allHoldings) => {
             console.log(allHoldings);
-            res.render("pages/index4", {
-              quotes: quotes,
-              marketState: quotes[0].marketState,
-              user: req.user,
-              holdingAmount: holding.quantity,
-              holdings: allHoldings,
+            let loggedInStatus = await LoggedInUser.findOne({
+              userId: req.user._id,
             });
+            if (!loggedInStatus) {
+              let newLogin = new LoggedInUser({
+                userId: req.user._id,
+                loginStatus: 1,
+              });
+              let loginres = await newLogin.save();
+              res.render("pages/index4", {
+                quotes: quotes,
+                marketState: quotes[0].marketState,
+                user: req.user,
+                holdingAmount: holding.quantity,
+                holdings: allHoldings,
+              });
+            } else {
+              LoggedInUser.findOneAndUpdate(
+                { userId: req.user._id },
+                { loginStatus: 1 },
+                { new: true }
+              ).exec((err, newStatus) => {
+                if (err) {
+                  console.log(err);
+                } else {
+                  res.render("pages/index4", {
+                    quotes: quotes,
+                    marketState: quotes[0].marketState,
+                    user: req.user,
+                    holdingAmount: holding.quantity,
+                    holdings: allHoldings,
+                  });
+                }
+              });
+            }
           });
         }
       }

@@ -141,7 +141,6 @@
 
   <!--Main layout-->
   <main style="margin-top: 38px; margin-left: 20px;" style="overflow: hidden;">
-    <% if (marketState !== "CLOSED") { %>
     <div class="container" style="overflow-y:hidden;">
       <div class="row gy-3">
         <div class="col-lg-12">
@@ -249,6 +248,7 @@
                   <small class="text-center">Please refresh the page to update holdings</small>
                   <div class="list-group-leaderboard" id="holdings-list" style=" overflow-y: auto;">
                     <% holdings.forEach((holding) => { %>
+                    <% if (holding.quantity > 0) { %>
                     <div id="<%= holding.id %>-holdingItem">
                       <a class="list-group-item list-group-item-action menu_links" aria-current="true">
                         <div class="d-flex w-100 justify-content-between">
@@ -263,6 +263,7 @@
                         </div>
                       </a>
                     </div>
+                    <% } %>
                     <% }); %>
                   </div>
               </section>
@@ -273,7 +274,6 @@
       </div>
 
     </div>
-    <% } %>
   </main>
   <!--Main layout-->
   <footer>
@@ -306,7 +306,7 @@
     }
   </script>
 
-  <script>
+  <!-- <script>
     // Graph
     var ctx = document.getElementById("myChart");
 
@@ -344,7 +344,7 @@
         },
       },
     });
-  </script>
+  </script> -->
 </body>
 
 </html>

@@ -2,6 +2,7 @@ const LocalStrategy = require("passport-local").Strategy;
 const bcrypt = require("bcrypt");
 const User = require("../models/user");
 var moment = require("moment");
+const LoggedInUser = require("../models/loggedinuser.js");
 
 module.exports = function (passport) {
   passport.use(
@@ -15,24 +16,44 @@ module.exports = function (passport) {
             });
           }
           //match pass
-          bcrypt.compare(password, user.password, (err, isMatch) => {
+          bcrypt.compare(password, user.password, async (err, isMatch) => {
             if (err) throw err;
 
             if (isMatch) {
               if (user.eventsRegistered.includes("61264025c6c5770016243f98")) {
-                let a = moment.utc("09:15:00", "hh:mm:ss").utcOffset("+05:30");
-                let b = moment.utc("15:30:00", "hh:mm:ss").utcOffset("+05:30");
-                let c = moment.utc().utcOffset("+05:30");
-                console.log(a);
-                console.log(b);
-                console.log(c);
-                if (moment(c).isBetween(a, b)) {
-                  return done(null, user);
+                let loggedInStatus = await LoggedInUser.findOne({
+                  userId: user._id,
+                });
+                // console.log("Login status : ", loggedInStatus);
+                if (!loggedInStatus) {
+                  console.log("Hey");
+                  let a = moment
+                    .utc("09:15:00", "hh:mm:ss")
+                    .utcOffset("+05:30");
+                  let b = moment
+                    .utc("15:30:00", "hh:mm:ss")
+                    .utcOffset("+05:30");
+                  let c = moment.utc().utcOffset("+05:30");
+                  console.log(a);
+                  console.log(b);
+                  console.log(c);
+                  if (moment(c).isBetween(a, b)) {
+                    return done(null, user);
+                  } else {
+                    // return done(null, false, {
+                    //   message: "Trading hours over",
+                    // });
+                    return done(null, user);
+                  }
                 } else {
-                  // return done(null, false, {
-                  //   message: "Trading hours over",
-                  // });
-                  return done(null, user);
+                  if (loggedInStatus.loginStatus == 1) {
+                    return done(null, false, {
+                      message:
+                        "Multiple login sessions detected. Please logout from previous session",
+                    });
+                  } else {
+                    return done(null, user);
+                  }
                 }
               } else {
                 return done(null, false, {

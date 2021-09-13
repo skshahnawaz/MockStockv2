@@ -3,6 +3,7 @@ const router = express.Router();
 const User = require("../models/user.js");
 const bcrypt = require("bcrypt");
 const passport = require("passport");
+const LoggedInUser = require("../models/loggedinuser.js");
 
 // login
 router.post("/login", (req, res, next) => {
@@ -15,9 +16,20 @@ router.post("/login", (req, res, next) => {
 
 //logout
 router.get("/logout", (req, res) => {
-  req.logout();
-  req.flash("success_msg", "Now logged out");
-  res.redirect("/users/login");
+  // console.log(req.user._id);
+  LoggedInUser.findOneAndUpdate(
+    { userId: req.user._id },
+    { loginStatus: 0 },
+    { new: true }
+  ).exec((err, newStatus) => {
+    if (err) {
+      console.log(err);
+    } else {
+      req.logout();
+      req.flash("success_msg", "Now logged out");
+      res.redirect("/users/login");
+    }
+  });
 });
 
 // login page

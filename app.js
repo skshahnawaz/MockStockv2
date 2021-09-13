@@ -17,7 +17,7 @@ const socket = require("socket.io");
 const Trade = require("./models/trade.js");
 const Holding = require("./models/holding.js");
 
-app.use(express.json()); //Used to parse JSON body
+app.use(express.json()); //Used to parse JSON bodies
 
 // const symbols = [
 //   "TCS.NS",
@@ -58,31 +58,6 @@ const symbols = [
   "SBILIFE.NS",
   "TITAN.NS",
   "BAJAJFINSV.NS",
-  "SHREECEM.NS",
-  "SBIN.NS",
-  "BPCL.NS",
-  "TATACONSUM.NS",
-  "BAJFINANCE.NS",
-  "COALINDIA.NS",
-  "NTPC.NS",
-  "DIVISLAB.NS",
-  "MARUTI.NS",
-  "NESTLEIND.NS",
-  "ADANIPORTS.NS",
-  "BHARTIARTL.NS",
-  "ASIANPAINT.NS",
-  "ICICIBANK.NS",
-  "TATASTEEL.NS",
-  "POWERGRID.NS",
-  "HDFCBANK.NS",
-  "JSWSTEEL.NS",
-  "ITC.NS",
-  "SUNPHARMA.NS",
-  "KOTAKBANK.NS",
-  "BRITANNIA.NS",
-  "ONGC.NS",
-  "INDUSINDBK.NS",
-  "IOC.NS",
 ];
 
 async function getPrices() {
@@ -148,6 +123,15 @@ const port = process.env.PORT;
 const server = app.listen(port, () => {
   console.log(`listening on *:${port}`);
 });
+
+// try {
+//   Trade.deleteMany({ tradedBy: "612bb44239b610001643d593" }, function (err) {
+//     if (err) console.log(err);
+//     console.log("Successful deletion");
+//   });
+// } catch (e) {
+//   console.log(e);
+// }
 
 const io = socket(server);
 
@@ -335,43 +319,43 @@ setInterval(async function () {
   var quotes = [];
 
   // Active when market is live
-  const msg = await getPrices().then((result) => {
-    result.forEach((quote) => {
-      quotes.push({
-        id: quote.symbol,
-        // name: quote.longName,
-        marketPrice: quote.regularMarketPrice,
-        marketPriceChange: quote.regularMarketChange.toFixed(2),
-        marketPriceChangePercent: quote.regularMarketChangePercent.toFixed(2),
-        badgeClassName: quote.regularMarketChange > 0 ? "success" : "danger",
-        arrowType: quote.regularMarketChange > 0 ? "up" : "down",
-        symbol: quote.symbol,
-        marketState: quote.marketState,
-      });
-    });
-    io.emit("update prices", { quoteList: quotes });
-  });
+  // const msg = await getPrices().then((result) => {
+  //   result.forEach((quote) => {
+  //     quotes.push({
+  //       id: quote.symbol,
+  //       // name: quote.longName,
+  //       marketPrice: quote.regularMarketPrice,
+  //       marketPriceChange: quote.regularMarketChange.toFixed(2),
+  //       marketPriceChangePercent: quote.regularMarketChangePercent.toFixed(2),
+  //       badgeClassName: quote.regularMarketChange > 0 ? "success" : "danger",
+  //       arrowType: quote.regularMarketChange > 0 ? "up" : "down",
+  //       symbol: quote.symbol,
+  //       marketState: quote.marketState,
+  //     });
+  //   });
+  //   io.emit("update prices", { quoteList: quotes });
+  // });
 
   // Active when market is closed
-  // symbols.forEach((symbol) => {
-  //   var regularMarketPrice = Math.floor(1000 + Math.random() * 9000);
-  //   var regularMarketChange = Math.floor(1000 + Math.random() * 9000);
-  //   var regularMarketChangePercent = Math.floor(1000 + Math.random() * 90);
+  symbols.forEach((symbol) => {
+    var regularMarketPrice = Math.floor(1000 + Math.random() * 9000);
+    var regularMarketChange = Math.floor(1000 + Math.random() * 9000);
+    var regularMarketChangePercent = Math.floor(1000 + Math.random() * 90);
 
-  //   quotes.push({
-  //     quoteSymbol: symbol,
-  //     quotePrice: Math.floor(1000 + Math.random() * 9000),
-  //     id: symbol,
-  //     // name: quote.longName,
-  //     marketPrice: regularMarketPrice,
-  //     marketPriceChange: regularMarketChange.toFixed(2),
-  //     marketPriceChangePercent: regularMarketChangePercent.toFixed(2),
-  //     badgeClassName: regularMarketChange > 0 ? "success" : "danger",
-  //     arrowType: regularMarketChange > 0 ? "up" : "down",
-  //     symbol: symbol,
-  //     marketState: "REGULAR",
-  //   });
-  // });
-  // io.emit("update prices", { quoteList: quotes });
+    quotes.push({
+      quoteSymbol: symbol,
+      quotePrice: Math.floor(1000 + Math.random() * 9000),
+      id: symbol,
+      // name: quote.longName,
+      marketPrice: regularMarketPrice,
+      marketPriceChange: regularMarketChange.toFixed(2),
+      marketPriceChangePercent: regularMarketChangePercent.toFixed(2),
+      badgeClassName: regularMarketChange > 0 ? "success" : "danger",
+      arrowType: regularMarketChange > 0 ? "up" : "down",
+      symbol: symbol,
+      marketState: "REGULAR",
+    });
+  });
+  io.emit("update prices", { quoteList: quotes });
   // console.log(quotes);
 }, 1000);
