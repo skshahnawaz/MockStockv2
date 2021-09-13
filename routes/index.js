@@ -118,16 +118,17 @@ router.get("/leaderboard", ensureAuthenticated, async (req, res) => {
 
           // console.log(userHoldings);
           for (let k = 0; k < userHoldings.length; k++) {
-            let latestQuote = await yahooFinance.quote(
-              userHoldings[k].companyCode
-            );
-            console.log(
-              userHoldings[k].companyCode +
-                " Price is : " +
-                latestQuote.regularMarketPrice
-            );
-            networth +=
-              userHoldings[k].quantity * latestQuote.regularMarketPrice;
+            // let latestQuote = await yahooFinance.quote(
+            //   userHoldings[k].companyCode
+            // );
+            // console.log(
+            //   userHoldings[k].companyCode +
+            //     " Price is : " +
+            //     latestQuote.regularMarketPrice
+            // );
+            // networth +=
+            //   userHoldings[k].quantity * latestQuote.regularMarketPrice;
+            networth += userHoldings[k].quantity;
           }
 
           // console.log(networth);

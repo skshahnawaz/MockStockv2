@@ -3,6 +3,7 @@ const bcrypt = require("bcrypt");
 const User = require("../models/user");
 var moment = require("moment");
 const LoggedInUser = require("../models/loggedinuser.js");
+const { v4: uuidv4 } = require("uuid");
 
 module.exports = function (passport) {
   passport.use(
@@ -21,12 +22,13 @@ module.exports = function (passport) {
 
             if (isMatch) {
               if (user.eventsRegistered.includes("61264025c6c5770016243f98")) {
+                // let sessionId = uuidv4();
                 let loggedInStatus = await LoggedInUser.findOne({
                   userId: user._id,
                 });
                 // console.log("Login status : ", loggedInStatus);
                 if (!loggedInStatus) {
-                  console.log("Hey");
+                  console.log("No login status");
                   let a = moment
                     .utc("09:15:00", "hh:mm:ss")
                     .utcOffset("+05:30");
@@ -37,6 +39,8 @@ module.exports = function (passport) {
                   console.log(a);
                   console.log(b);
                   console.log(c);
+                  // user.sessionId = sessionId;
+                  console.log(user);
                   if (moment(c).isBetween(a, b)) {
                     return done(null, user);
                   } else {
@@ -47,6 +51,7 @@ module.exports = function (passport) {
                   }
                 } else {
                   if (loggedInStatus.loginStatus == 1) {
+                    console.log("Already logged in user");
                     return done(null, false, {
                       message:
                         "Multiple login sessions detected. Please logout from previous session",
