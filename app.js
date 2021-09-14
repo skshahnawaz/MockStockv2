@@ -143,7 +143,7 @@ app.use("/users", require("./routes/users"));
 
 const port = process.env.PORT;
 // const port = 8080;
-app.listen(port);
+// app.listen(port);
 // console.log(`Server is listening on port ${port}`);
 
 const server = app.listen(port, () => {
