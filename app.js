@@ -235,7 +235,8 @@ io.on("connection", async function (socket) {
           remainingBalance = parseInt(balance) + amt;
           console.log("Remains : ", remainingBalance);
         }
-        remainingBalance = Math.round(remainingBalance * 100) / 100.0;
+        // remainingBalance = Math.round(remainingBalance * 100) / 100.0;
+        remainingBalance = remainingBalance.toFixed(2);
         transaction.remainingBalance = remainingBalance;
         console.log("Remaining Balance : ", remainingBalance);
 
