@@ -59,6 +59,31 @@ const symbols = [
   "SBILIFE.NS",
   "TITAN.NS",
   "BAJAJFINSV.NS",
+  "SHREECEM.NS",
+  "SBIN.NS",
+  "BPCL.NS",
+  "TATACONSUM.NS",
+  "BAJFINANCE.NS",
+  "COALINDIA.NS",
+  "NTPC.NS",
+  "DIVISLAB.NS",
+  "MARUTI.NS",
+  "NESTLEIND.NS",
+  "ADANIPORTS.NS",
+  "BHARTIARTL.NS",
+  "ASIANPAINT.NS",
+  "ICICIBANK.NS",
+  "TATASTEEL.NS",
+  "POWERGRID.NS",
+  "HDFCBANK.NS",
+  "JSWSTEEL.NS",
+  "ITC.NS",
+  "SUNPHARMA.NS",
+  "KOTAKBANK.NS",
+  "BRITANNIA.NS",
+  "ONGC.NS",
+  "INDUSINDBK.NS",
+  "IOC.NS",
 ];
 
 async function getPrices() {
@@ -118,7 +143,7 @@ app.use("/users", require("./routes/users"));
 
 const port = process.env.PORT;
 // const port = 8080;
-// app.listen(port);
+app.listen(port);
 // console.log(`Server is listening on port ${port}`);
 
 const server = app.listen(port, () => {
@@ -126,13 +151,10 @@ const server = app.listen(port, () => {
 });
 
 // try {
-//   Holding.deleteMany(
-//     { date: { $gte: new Date("2021-09-13T03:40:01.946+00:00") } },
-//     function (err) {
-//       if (err) console.log(err);
-//       console.log("Successful deletion");
-//     }
-//   );
+//   Holding.deleteMany({ heldBy: "613b70d39db3b600119ca340" }, function (err) {
+//     if (err) console.log(err);
+//     console.log("Successful deletion");
+//   });
 // } catch (e) {
 //   console.log(e);
 // }
