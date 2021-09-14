@@ -197,6 +197,7 @@
       let walletBalance = document.getElementById("wallet-balance").innerText;
       let userID = document.getElementById("userID").value;
 
+
       if (document.getElementById('orderType-cnc-market').checked) {
         orderType = "market";
       }
@@ -206,6 +207,8 @@
 
       if (orderQuantity * orderPrice > walletBalance) {
         notify("Insufficient Wallet Balance", "sell");
+      } else if (orderQuantity <= 0) {
+        notify("Enter valid quantity", "sell");
       } else {
         if (companyCode !== "Select stock") {
           // let usersessionId = document.getElementById("loggedInSessionId").value;
@@ -244,21 +247,26 @@
         orderType = "limit";
       }
 
-      if (companyCode !== "Select stock") {
-        // let usersessionId = document.getElementById("loggedInSessionId").value;
-        socket.emit("transact", {
-          ttype: transactionType,
-          symbol: companyCode,
-          name: companyName,
-          quantity: orderQuantity,
-          lotSize: orderLotSize,
-          mode: orderMode,
-          atPrice: orderPrice,
-          otype: orderType,
-          balance: walletBalance,
-          userID: userID,
-          usersessionId: usessionId
-        });
+
+      if (orderQuantity <= 0) {
+        notify("Enter valid quantity", "sell");
+      } else {
+        if (companyCode !== "Select stock") {
+          // let usersessionId = document.getElementById("loggedInSessionId").value;
+          socket.emit("transact", {
+            ttype: transactionType,
+            symbol: companyCode,
+            name: companyName,
+            quantity: orderQuantity,
+            lotSize: orderLotSize,
+            mode: orderMode,
+            atPrice: orderPrice,
+            otype: orderType,
+            balance: walletBalance,
+            userID: userID,
+            usersessionId: usessionId
+          });
+        }
       }
 
     });

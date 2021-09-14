@@ -114,31 +114,31 @@ router.get("/leaderboard", ensureAuthenticated, async (req, res) => {
         for (let i = 0; i < holdings.length; i++) {
           let memberId = holdings[i].heldBy;
           let registeredUser = await User.findById(memberId.trim());
-          let networth = holdings[i].quantity;
-          let userHoldings = await Holding.find({
-            companyCode: { $ne: "WALLETCASH" },
-            heldBy: memberId.trim(),
-          });
+          // let networth = holdings[i].quantity;
+          // let userHoldings = await Holding.find({
+          //   companyCode: { $ne: "WALLETCASH" },
+          //   heldBy: memberId.trim(),
+          // });
 
           // console.log(userHoldings);
-          for (let k = 0; k < userHoldings.length; k++) {
-            // let latestQuote = await yahooFinance.quote(
-            //   userHoldings[k].companyCode
-            // );
-            // console.log(
-            //   userHoldings[k].companyCode +
-            //     " Price is : " +
-            //     latestQuote.regularMarketPrice
-            // );
-            // networth +=
-            //   userHoldings[k].quantity * latestQuote.regularMarketPrice;
-            networth += userHoldings[k].quantity;
-          }
+          // for (let k = 0; k < userHoldings.length; k++) {
+          // let latestQuote = await yahooFinance.quote(
+          //   userHoldings[k].companyCode
+          // );
+          // console.log(
+          //   userHoldings[k].companyCode +
+          //     " Price is : " +
+          //     latestQuote.regularMarketPrice
+          // );
+          // networth +=
+          //   userHoldings[k].quantity * latestQuote.regularMarketPrice;
+          // networth += userHoldings[k].quantity;
+          // }
 
           // console.log(networth);
           memberList.push({
             userDetails: registeredUser,
-            walletWorth: networth,
+            walletWorth: holdings[i].quantity,
           });
         }
         res.render("pages/leaderboard", {
