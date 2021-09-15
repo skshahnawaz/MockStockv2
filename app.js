@@ -138,8 +138,8 @@ app.use((req, res, next) => {
 app.use("/", require("./routes/index"));
 app.use("/users", require("./routes/users"));
 
-const port = process.env.PORT; //Uncomment if env configured
-// const port = 8080; //Uncomment for Local Machine
+// const port = process.env.PORT; //Uncomment if env configured
+const port = 8080; //Uncomment for Local Machine
 
 const server = app.listen(port, () => {
   console.log(`listening on *:${port}`);
@@ -150,7 +150,7 @@ const server = app.listen(port, () => {
 //-*-*-*-*-*-*-*-* Database Bulk Operation Temporary Code *-*-*-*-*-*-*-*
 
 // try {
-//   Holding.deleteMany({ heldBy: "613b70d39db3b600119ca340" }, function (err) {
+//   Trade.deleteMany({ tradedBy: "612e6d658bef5c0011589e2d" }, function (err) {
 //     if (err) console.log(err);
 //     console.log("Successful deletion");
 //   });

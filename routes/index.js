@@ -156,6 +156,7 @@ router.get("/dashboard", ensureAuthenticated, async (req, res) => {
 
   const msg = await getPrices(symbols).then((result) => {
     result.forEach((quote) => {
+      console.log(quote.marketState);
       quotes.push({
         // id: uuidv4(),
         id: quote.symbol,

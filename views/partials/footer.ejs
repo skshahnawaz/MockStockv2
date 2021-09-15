@@ -84,9 +84,9 @@
         document.getElementById(marketPriceChangePercentElementID).innerText = quote.marketPriceChangePercent + "%";
         document.getElementById(marketPriceChangePercentBadgeElementID).className = "badge bg-" + quote.badgeClassName;
 
-        // if (document.getElementById("orderForm-cnc-companyCode").value === quote.symbol) {
-        //   document.getElementById("orderForm-cnc-price").value = quote.marketPrice;
-        // }
+        if (document.getElementById("orderForm-cnc-companyCode").value === quote.symbol) {
+          document.getElementById("orderForm-cnc-price").value = quote.marketPrice;
+        }
 
       });
 

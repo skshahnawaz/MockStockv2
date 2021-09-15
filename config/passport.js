@@ -4,6 +4,13 @@ const User = require("../models/user");
 var moment = require("moment");
 const LoggedInUser = require("../models/loggedinuser.js");
 const { v4: uuidv4 } = require("uuid");
+const yahooFinance = require("yahoo-finance2").default;
+
+async function getPrices() {
+  const result = await yahooFinance.quote("TCS.NS");
+  //   console.log(result);
+  return result;
+}
 
 module.exports = function (passport) {
   passport.use(
@@ -39,22 +46,40 @@ module.exports = function (passport) {
                   console.log(a);
                   console.log(b);
                   console.log(c);
-                  // user.sessionId = sessionId;
-                  // console.log(user);
-                  if (moment(c).isBetween(a, b)) {
+                  const latestQuote = await getPrices();
+                  if (latestQuote === "OPEN") {
                     return done(null, user);
                   } else {
-                    // return done(null, false, {
-                    //   message: "Trading hours over",
-                    // });
-                    return done(null, user);
+                    return done(null, false, {
+                      message: "Trading hours over",
+                    });
                   }
+                  // user.sessionId = sessionId;
+                  // console.log(user);
+                  // if (moment(c).isBetween(a, b)) {
+                  //   return done(null, user);
+                  // } else {
+                  //   // return done(null, false, {
+                  //   //   message: "Trading hours over",
+                  //   // });
+                  //   return done(null, user);
+                  // }
                 } else {
                   if (loggedInStatus.loginStatus == 1) {
                     // user.sessionId = uuidv4();
                     console.log("Login status 1");
                     // console.log(uuidv4());
-                    return done(null, user);
+                    let loggedInStatus = await LoggedInUser.findOne({
+                      userId: user._id,
+                    });
+                    if (latestQuote === "OPEN") {
+                      return done(null, user);
+                    } else {
+                      return done(null, false, {
+                        message: "Trading hours over",
+                      });
+                    }
+                    // return done(null, user);
                     // LoggedInUser.findOneAndUpdate(
                     //   { userId: user._id },
                     //   { loginStatus: 0, sessionId: uuidv4() },
