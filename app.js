@@ -1,3 +1,4 @@
+//-*-*-*-*-*-*-*-* Module imports start *-*-*-*-*-*-*-*
 const yahooFinance = require("yahoo-finance2").default;
 var express = require("express");
 const router = express.Router();
@@ -20,18 +21,9 @@ const LoggedInUser = require("./models/loggedinuser.js");
 
 app.use(express.json()); //Used to parse JSON bodies
 
-// const symbols = [
-//   "TCS.NS",
-//   "RELIANCE.NS",
-//   "WIPRO.NS",
-//   "LTTS.NS",
-//   "TECHM.NS",
-//   "MINDTREE.NS",
-//   "BAJFINANCE.NS",
-//   "TATASTEEL.NS",
-//   "ADANITRANS.NS",
-//   "ADANIPOWER.NS",
-// ];
+//-*-*-*-*-*-*-*-* Module imports end *-*-*-*-*-*-*-*
+
+//-*-*-*-*-*-*-*-* Price Update Section starts *-*-*-*-*-*-*-*
 
 const symbols = [
   "WIPRO.NS",
@@ -86,13 +78,16 @@ const symbols = [
   "IOC.NS",
 ];
 
+// Function to fetch the prices from Yahoo Finance API
 async function getPrices() {
   const result = await yahooFinance.quote(symbols);
   //   console.log(result);
   return result;
 }
 
-//mongoose
+//-*-*-*-*-*-*-*-* Price Update Section ends *-*-*-*-*-*-*-*
+
+//-*-*-*-*-*-*-*-* Mongoose connection *-*-*-*-*-*-*-*
 mongoose
   .connect(
     "mongodb+srv://juecell:" +
@@ -106,10 +101,13 @@ mongoose
   .then(() => console.log("connected to DB!"))
   .catch((err) => console.log(err));
 
-// mongoose.set("useFindAndModify", false);
+//-*-*-*-*-*-*-*-* Mongoose connection *-*-*-*-*-*-*-*
+
+//-*-*-*-*-*-*-*-* Express server *-*-*-*-*-*-*-*
 
 // set the view engine to ejs
 app.set("view engine", "ejs");
+
 // serve static assets
 app.use(express.static(__dirname + "/views"));
 
@@ -126,6 +124,7 @@ app.use(
 );
 app.use(passport.initialize());
 app.use(passport.session());
+
 //use flash
 app.use(flash());
 app.use((req, res, next) => {
@@ -135,20 +134,20 @@ app.use((req, res, next) => {
   next();
 });
 
-// use res.render to load up an ejs view file
 //Routes
 app.use("/", require("./routes/index"));
 app.use("/users", require("./routes/users"));
-// app.use("/events", require("./routes/events"));
 
-const port = process.env.PORT;
-// const port = 8080;
-// app.listen(port);
-// console.log(`Server is listening on port ${port}`);
+const port = process.env.PORT; //Uncomment if env configured
+// const port = 8080; //Uncomment for Local Machine
 
 const server = app.listen(port, () => {
   console.log(`listening on *:${port}`);
 });
+
+//-*-*-*-*-*-*-*-* Express server *-*-*-*-*-*-*-*
+
+//-*-*-*-*-*-*-*-* Database Bulk Operation Temporary Code *-*-*-*-*-*-*-*
 
 // try {
 //   Holding.deleteMany({ heldBy: "613b70d39db3b600119ca340" }, function (err) {
@@ -158,6 +157,8 @@ const server = app.listen(port, () => {
 // } catch (e) {
 //   console.log(e);
 // }
+
+//-*-*-*-*-*-*-*-* Database Bulk Operation Temporary Code *-*-*-*-*-*-*-*
 
 const io = socket(server);
 
@@ -184,6 +185,7 @@ io.on("connection", async function (socket) {
     let loggedIn = await LoggedInUser.findOne({
       userId: userID,
     });
+
     let loggedInSessionId = loggedIn.sessionId;
     console.log(loggedInSessionId);
 
@@ -224,60 +226,66 @@ io.on("connection", async function (socket) {
       transaction.userID = userID;
       io.emit("transaction queued", transaction);
 
-      newTrade.save().then((value) => {
-        // console.log(ObjectId(value._id).toString());
-        // console.log(value);
-        let amt = parseInt(quantity) * parseInt(atPrice);
-        if (ttype.toUpperCase() === "BUY") {
-          remainingBalance = parseInt(balance) - amt;
-          console.log("Remains : ", remainingBalance);
-        } else {
-          remainingBalance = parseInt(balance) + amt;
-          console.log("Remains : ", remainingBalance);
-        }
-        // remainingBalance = Math.round(remainingBalance * 100) / 100.0;
-        remainingBalance = remainingBalance.toFixed(2);
-        transaction.remainingBalance = remainingBalance;
-        console.log("Remaining Balance : ", remainingBalance);
+      // fetch wallet balance from database
+      let currentUserWallet = await Holding.findOne({
+        heldBy: userID,
+        companyCode: "WALLETCASH",
+      });
 
-        Holding.findOne(
-          { heldBy: userID, companyCode: symbol },
-          async function (err, holdings) {
-            if (err) {
-              console.log("Error : ", err);
-            }
-            if (!holdings && ttype.toUpperCase() === "BUY") {
-              var newHolding = new Holding({
-                companyName: name,
-                companyCode: symbol,
-                quantity: quantity,
-                heldBy: userID,
-              });
-              newHolding.save().then((newHolding) => {
-                console.log("New Holding : ", newHolding);
-                Holding.findOneAndUpdate(
-                  { heldBy: userID, companyCode: "WALLETCASH" },
-                  {
-                    $inc: { quantity: -amt },
-                  },
-                  { new: true }
-                ).exec((err, newWallet) => {
-                  if (err) {
-                    console.log(err);
-                  }
-                  console.log("Updated wallet to : ", newWallet);
-                  // console.log(newWallet);
+      let currentUserWalletBalance = currentUserWallet.quantity;
+      console.log(
+        "Wallet balance fetched from DB : ",
+        currentUserWalletBalance
+      );
+
+      let amt = parseFloat(quantity) * parseFloat(atPrice);
+
+      balance = currentUserWalletBalance;
+
+      // Check if transaction feasible or not
+      if (ttype.toUpperCase() === "BUY") {
+        remainingBalance = parseFloat(balance) - amt;
+        console.log("Remains : ", remainingBalance);
+      } else {
+        remainingBalance = parseFloat(balance) + amt;
+        console.log("Remains : ", remainingBalance);
+      }
+
+      if (remainingBalance < 0) {
+        rejectTransaction();
+      } else {
+        newTrade.save().then((value) => {
+          // console.log(ObjectId(value._id).toString());
+          // console.log(value);
+          let amt = parseFloat(quantity) * parseFloat(atPrice);
+          console.log("Transaction amount :", amt);
+          if (ttype.toUpperCase() === "BUY") {
+            remainingBalance = parseFloat(balance) - amt;
+            console.log("Remains : ", remainingBalance);
+          } else {
+            remainingBalance = parseFloat(balance) + amt;
+            console.log("Remains : ", remainingBalance);
+          }
+          // remainingBalance = Math.round(remainingBalance * 100) / 100.0;
+          remainingBalance = remainingBalance.toFixed(2);
+          transaction.remainingBalance = remainingBalance;
+          console.log("Remaining Balance : ", remainingBalance);
+
+          Holding.findOne(
+            { heldBy: userID, companyCode: symbol },
+            async function (err, holdings) {
+              if (err) {
+                console.log("Error : ", err);
+              }
+              if (!holdings && ttype.toUpperCase() === "BUY") {
+                var newHolding = new Holding({
+                  companyName: name,
+                  companyCode: symbol,
+                  quantity: quantity,
+                  heldBy: userID,
                 });
-              });
-              sendTransactionReceipt(transaction);
-            } else {
-              if (ttype.toUpperCase() === "BUY") {
-                Holding.findOneAndUpdate(
-                  { heldBy: userID, companyCode: symbol },
-                  { $inc: { quantity: quantity } },
-                  { new: true }
-                ).exec((err, newHolding) => {
-                  console.log("Updated Holding : ", newHolding);
+                newHolding.save().then((newHolding) => {
+                  console.log("New Holding : ", newHolding);
                   Holding.findOneAndUpdate(
                     { heldBy: userID, companyCode: "WALLETCASH" },
                     {
@@ -293,48 +301,72 @@ io.on("connection", async function (socket) {
                   });
                 });
                 sendTransactionReceipt(transaction);
-              } else if (ttype.toUpperCase() === "SELL") {
-                Holding.findOne({ heldBy: userID, companyCode: symbol }).exec(
-                  (err, existingHolding) => {
-                    console.log("SELL existing : ", existingHolding);
-                    if (!existingHolding) {
-                      console.log("No existing holdings");
-                      rejectTransaction();
-                    } else {
-                      if (quantity > existingHolding.quantity) {
-                        console.log("Existing holdings too less");
+              } else {
+                if (ttype.toUpperCase() === "BUY") {
+                  Holding.findOneAndUpdate(
+                    { heldBy: userID, companyCode: symbol },
+                    { $inc: { quantity: quantity } },
+                    { new: true }
+                  ).exec((err, newHolding) => {
+                    console.log("Updated Holding : ", newHolding);
+                    Holding.findOneAndUpdate(
+                      { heldBy: userID, companyCode: "WALLETCASH" },
+                      {
+                        $inc: { quantity: -amt },
+                      },
+                      { new: true }
+                    ).exec((err, newWallet) => {
+                      if (err) {
+                        console.log(err);
+                      }
+                      console.log("Updated wallet to : ", newWallet);
+                      // console.log(newWallet);
+                    });
+                  });
+                  sendTransactionReceipt(transaction);
+                } else if (ttype.toUpperCase() === "SELL") {
+                  Holding.findOne({ heldBy: userID, companyCode: symbol }).exec(
+                    (err, existingHolding) => {
+                      console.log("SELL existing : ", existingHolding);
+                      if (!existingHolding) {
+                        console.log("No existing holdings");
                         rejectTransaction();
                       } else {
-                        Holding.findOneAndUpdate(
-                          { heldBy: userID, companyCode: symbol },
-                          { $inc: { quantity: -quantity } },
-                          { new: true }
-                        ).exec((err, newHolding) => {
-                          console.log("Updated Holding : ", newHolding);
+                        if (quantity > existingHolding.quantity) {
+                          console.log("Existing holdings too less");
+                          rejectTransaction();
+                        } else {
                           Holding.findOneAndUpdate(
-                            { heldBy: userID, companyCode: "WALLETCASH" },
-                            {
-                              $inc: { quantity: amt },
-                            },
+                            { heldBy: userID, companyCode: symbol },
+                            { $inc: { quantity: -quantity } },
                             { new: true }
-                          ).exec((err, newWallet) => {
-                            if (err) {
-                              console.log(err);
-                            }
-                            console.log("Updated wallet to : ", newWallet);
-                            // console.log(newWallet);
+                          ).exec((err, newHolding) => {
+                            console.log("Updated Holding : ", newHolding);
+                            Holding.findOneAndUpdate(
+                              { heldBy: userID, companyCode: "WALLETCASH" },
+                              {
+                                $inc: { quantity: amt },
+                              },
+                              { new: true }
+                            ).exec((err, newWallet) => {
+                              if (err) {
+                                console.log(err);
+                              }
+                              console.log("Updated wallet to : ", newWallet);
+                              // console.log(newWallet);
+                            });
                           });
-                        });
-                        sendTransactionReceipt(transaction);
+                          sendTransactionReceipt(transaction);
+                        }
                       }
                     }
-                  }
-                );
+                  );
+                }
               }
             }
-          }
-        );
-      });
+          );
+        });
+      }
       function sendTransactionReceipt() {
         io.emit("transaction successful", transaction);
       }
