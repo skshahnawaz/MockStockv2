@@ -252,7 +252,7 @@ io.on("connection", async function (socket) {
       }
 
       if (remainingBalance < 0) {
-        rejectTransaction();
+        rejectTransaction("Insufficient wallet balance to perform transaction");
       } else {
         newTrade.save().then((value) => {
           // console.log(ObjectId(value._id).toString());
@@ -330,11 +330,15 @@ io.on("connection", async function (socket) {
                       console.log("SELL existing : ", existingHolding);
                       if (!existingHolding) {
                         console.log("No existing holdings");
-                        rejectTransaction();
+                        rejectTransaction("No existing holdings");
                       } else {
                         if (quantity > existingHolding.quantity) {
-                          console.log("Existing holdings too less");
-                          rejectTransaction();
+                          console.log(
+                            "Existing holdings too less to perform transaction"
+                          );
+                          rejectTransaction(
+                            "Existing holdings too less to perform transaction"
+                          );
                         } else {
                           Holding.findOneAndUpdate(
                             { heldBy: userID, companyCode: symbol },
@@ -370,8 +374,9 @@ io.on("connection", async function (socket) {
       function sendTransactionReceipt() {
         io.emit("transaction successful", transaction);
       }
-      function rejectTransaction() {
+      function rejectTransaction(msg) {
         console.log("rejecting....");
+        transaction.message = msg;
         io.emit("transaction rejected", transaction);
       }
       // setTimeout(sendTransactionReceipt, 3000);

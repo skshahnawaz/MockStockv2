@@ -136,7 +136,8 @@
         symbol,
         name,
         atPrice,
-        userID
+        userID,
+        message
       } = transaction;
       //   const transactionMessage = "Transaction rejected : " + id + " - " + ttype +
       //     " " +
@@ -146,8 +147,7 @@
       //     ") at " +
       //     atPrice;
       if (loggedinUserID == userID) {
-        const transactionMessage = "Insufficient Holdings";
-        notify(transactionMessage, "sell");
+        notify(message, "sell");
         document.getElementById(id + "-orderStatusBadge").classList.remove('bg-warning');
         document.getElementById(id + "-orderStatusBadge").classList.add('bg-danger');
         document.getElementById(id + "-orderStatusBadge").innerText = "Rejected";
