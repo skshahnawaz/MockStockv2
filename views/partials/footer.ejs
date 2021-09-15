@@ -126,6 +126,9 @@
         document.getElementById(id + "-orderStatusBadge").innerText = "Complete";
         document.getElementById(id + "-orderID").innerText = id;
         document.getElementById("wallet-balance").innerText = remainingBalance;
+
+        document.getElementById("buy-cnc").disabled = false;
+        document.getElementById("sell-cnc").disabled = false;
       }
     });
 
@@ -152,6 +155,9 @@
         document.getElementById(id + "-orderStatusBadge").classList.add('bg-danger');
         document.getElementById(id + "-orderStatusBadge").innerText = "Rejected";
         document.getElementById(id + "-orderID").innerText = id;
+
+        document.getElementById("buy-cnc").disabled = false;
+        document.getElementById("sell-cnc").disabled = false;
       }
     });
 
@@ -186,6 +192,8 @@
     });
 
     $('#buy-cnc').click(function() {
+      document.getElementById("buy-cnc").disabled = true;
+      document.getElementById("sell-cnc").disabled = true;
       let companyName = $('#orderForm-cnc-companyName').val();
       let companyCode = $('#orderForm-cnc-companyCode').val();
       let orderQuantity = $('#orderForm-cnc-quantity').val();
@@ -230,6 +238,8 @@
     });
 
     $('#sell-cnc').click(function() {
+      document.getElementById("buy-cnc").disabled = true;
+      document.getElementById("sell-cnc").disabled = true;
       let companyName = $('#orderForm-cnc-companyName').val();
       let companyCode = $('#orderForm-cnc-companyCode').val();
       let orderQuantity = $('#orderForm-cnc-quantity').val();

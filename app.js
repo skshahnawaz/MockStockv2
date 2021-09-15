@@ -257,7 +257,7 @@ io.on("connection", async function (socket) {
         newTrade.save().then((value) => {
           // console.log(ObjectId(value._id).toString());
           // console.log(value);
-          let amt = parseFloat(quantity) * parseFloat(atPrice);
+          // let amt = parseFloat(quantity) * parseFloat(atPrice);
           console.log("Transaction amount :", amt);
           if (ttype.toUpperCase() === "BUY") {
             remainingBalance = parseFloat(balance) - amt;
