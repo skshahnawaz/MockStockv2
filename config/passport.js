@@ -54,6 +54,7 @@ module.exports = function (passport) {
                       message: "Trading hours over",
                     });
                   }
+                  s;
                   // user.sessionId = sessionId;
                   // console.log(user);
                   // if (moment(c).isBetween(a, b)) {
@@ -95,7 +96,14 @@ module.exports = function (passport) {
                     // user.sessionId = uuidv4();
                     console.log("Login status 0");
                     // console.log(user.sessionId);
-                    return done(null, user);
+                    // return done(null, user);
+                    if (latestQuote.marketState === "REGULAR") {
+                      return done(null, user);
+                    } else {
+                      return done(null, false, {
+                        message: "Trading hours over",
+                      });
+                    }
                   }
                 }
               } else {
