@@ -50,9 +50,10 @@ module.exports = function (passport) {
                   if (latestQuote.marketState === "REGULAR") {
                     return done(null, user);
                   } else {
-                    return done(null, false, {
-                      message: "Trading hours over",
-                    });
+                    return done(null, user);
+                    // return done(null, false, {
+                    //   message: "Trading hours over",
+                    // });
                   }
                   s;
                   // user.sessionId = sessionId;
@@ -75,9 +76,10 @@ module.exports = function (passport) {
                     if (latestQuote.marketState === "REGULAR") {
                       return done(null, user);
                     } else {
-                      return done(null, false, {
-                        message: "Trading hours over",
-                      });
+                      return done(null, user);
+                      // return done(null, false, {
+                      //   message: "Trading hours over",
+                      // });
                     }
                     // return done(null, user);
                     // LoggedInUser.findOneAndUpdate(
@@ -100,9 +102,10 @@ module.exports = function (passport) {
                     if (latestQuote.marketState === "REGULAR") {
                       return done(null, user);
                     } else {
-                      return done(null, false, {
-                        message: "Trading hours over",
-                      });
+                      return done(null, user);
+                      // return done(null, false, {
+                      //   message: "Trading hours over",
+                      // });
                     }
                   }
                 }
