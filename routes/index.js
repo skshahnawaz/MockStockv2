@@ -138,7 +138,7 @@ router.get("/leaderboard", ensureAuthenticated, async (req, res) => {
           // console.log(networth);
           memberList.push({
             userDetails: registeredUser,
-            walletWorth: holdings[i].quantity,
+            walletWorth: holdings[i].quantity.toFixed(2),
           });
         }
         res.render("pages/leaderboard", {

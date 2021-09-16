@@ -138,8 +138,8 @@ app.use((req, res, next) => {
 app.use("/", require("./routes/index"));
 app.use("/users", require("./routes/users"));
 
-const port = process.env.PORT; //Uncomment if env configured
-// const port = 8080; //Uncomment for Local Machine
+// const port = process.env.PORT; //Uncomment if env configured
+const port = 8080; //Uncomment for Local Machine
 
 const server = app.listen(port, () => {
   console.log(`listening on *:${port}`);
