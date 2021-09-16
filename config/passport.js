@@ -47,7 +47,7 @@ module.exports = function (passport) {
                   console.log(b);
                   console.log(c);
                   let latestQuote = await getPrices();
-                  if (latestQuote.marketState === "OPEN") {
+                  if (latestQuote.marketState === "REGULAR") {
                     return done(null, user);
                   } else {
                     return done(null, false, {
@@ -70,7 +70,8 @@ module.exports = function (passport) {
                     console.log("Login status 1");
                     // console.log(uuidv4());
                     let latestQuote = await getPrices();
-                    if (latestQuote.marketState === "OPEN") {
+                    console.log(latestQuote.marketState);
+                    if (latestQuote.marketState === "REGULAR") {
                       return done(null, user);
                     } else {
                       return done(null, false, {
