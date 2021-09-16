@@ -239,7 +239,7 @@ io.on("connection", async function (socket) {
       );
 
       let amt = parseFloat(quantity) * parseFloat(atPrice);
-      let brokerage = 0.2 * amt;
+      let brokerage = 0.002 * amt;
       amt = amt + brokerage;
 
       balance = currentUserWalletBalance;
