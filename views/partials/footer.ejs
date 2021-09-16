@@ -215,6 +215,8 @@
 
       if (orderQuantity * orderPrice > walletBalance) {
         notify("Insufficient Wallet Balance", "sell");
+        document.getElementById("buy-cnc").disabled = false;
+        document.getElementById("sell-cnc").disabled = false;
       } else if (orderQuantity <= 0) {
         notify("Enter valid quantity", "sell");
       } else {
@@ -260,6 +262,8 @@
 
       if (orderQuantity <= 0) {
         notify("Enter valid quantity", "sell");
+        document.getElementById("buy-cnc").disabled = false;
+        document.getElementById("sell-cnc").disabled = false;
       } else {
         if (companyCode !== "Select stock") {
           // let usersessionId = document.getElementById("loggedInSessionId").value;
