@@ -99,6 +99,7 @@ module.exports = function (passport) {
                     console.log("Login status 0");
                     // console.log(user.sessionId);
                     // return done(null, user);
+                    let latestQuote = await getPrices();
                     if (latestQuote.marketState === "REGULAR") {
                       return done(null, user);
                     } else {
