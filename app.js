@@ -149,14 +149,14 @@ const server = app.listen(port, () => {
 
 //-*-*-*-*-*-*-*-* Database Bulk Operation Temporary Code *-*-*-*-*-*-*-*
 
-try {
-  Trade.deleteMany({ tradedBy: "612611a2374368001616c4b0" }, function (err) {
-    if (err) console.log(err);
-    console.log("Successful deletion");
-  });
-} catch (e) {
-  console.log(e);
-}
+// try {
+//   Trade.deleteMany({ tradedBy: "612611a2374368001616c4b0" }, function (err) {
+//     if (err) console.log(err);
+//     console.log("Successful deletion");
+//   });
+// } catch (e) {
+//   console.log(e);
+// }
 
 //-*-*-*-*-*-*-*-* Database Bulk Operation Temporary Code *-*-*-*-*-*-*-*
 
@@ -239,9 +239,10 @@ io.on("connection", async function (socket) {
       );
 
       let amt = parseFloat(quantity) * parseFloat(atPrice);
-      let brokerage = 0.002 * amt;
+      let brokerage = parseFloat(0.002 * amt);
       brokerage = brokerage.toFixed(2);
-      amt = amt + brokerage;
+      console.log(brokerage);
+      amt = parseFloat(amt + brokerage);
 
       balance = currentUserWalletBalance;
 
