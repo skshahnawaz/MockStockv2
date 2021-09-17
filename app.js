@@ -240,18 +240,18 @@ io.on("connection", async function (socket) {
 
       let amt = parseFloat(quantity) * parseFloat(atPrice);
       let brokerage = parseFloat(0.002 * amt);
-      brokerage = brokerage.toFixed(2);
+      brokerage = brokerage;
       console.log(brokerage);
-      amt = parseFloat(amt + brokerage).toFixed(2);
+      amt = parseFloat(amt + brokerage);
 
-      balance = currentUserWalletBalance.toFixed(2);
+      balance = currentUserWalletBalance;
 
       // Check if transaction feasible or not
       if (ttype.toUpperCase() === "BUY") {
-        remainingBalance = parseFloat(balance) - amt;
+        remainingBalance = parseFloat(balance - amt).toFixed(2);
         console.log("Remains : ", remainingBalance);
       } else {
-        remainingBalance = parseFloat(balance) + amt;
+        remainingBalance = parseFloat(balance + amt).toFixed(2);
         console.log("Remains : ", remainingBalance);
       }
 
@@ -264,14 +264,14 @@ io.on("connection", async function (socket) {
         // let amt = parseFloat(quantity) * parseFloat(atPrice);
         console.log("Transaction amount :", amt);
         if (ttype.toUpperCase() === "BUY") {
-          remainingBalance = parseFloat(balance) - amt;
+          remainingBalance = parseFloat(balance - amt).toFixed(2);
           console.log("Remains : ", remainingBalance);
         } else {
-          remainingBalance = parseFloat(balance) + amt;
+          remainingBalance = parseFloat(balance + amt).toFixed(2);
           console.log("Remains : ", remainingBalance);
         }
         // remainingBalance = Math.round(remainingBalance * 100) / 100.0;
-        remainingBalance = remainingBalance.toFixed(2);
+        remainingBalance = remainingBalance;
         transaction.remainingBalance = remainingBalance;
         console.log("Remaining Balance : ", remainingBalance);
 
