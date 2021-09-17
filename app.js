@@ -242,9 +242,9 @@ io.on("connection", async function (socket) {
       let brokerage = parseFloat(0.002 * amt);
       brokerage = brokerage.toFixed(2);
       console.log(brokerage);
-      amt = parseFloat(amt + brokerage);
+      amt = parseFloat(amt + brokerage).toFixed(2);
 
-      balance = currentUserWalletBalance;
+      balance = currentUserWalletBalance.toFixed(2);
 
       // Check if transaction feasible or not
       if (ttype.toUpperCase() === "BUY") {

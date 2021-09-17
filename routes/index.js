@@ -228,7 +228,7 @@ router.get("/dashboard", ensureAuthenticated, async (req, res) => {
                 quotes: quotes,
                 marketState: quotes[0].marketState,
                 user: req.user,
-                holdingAmount: holding.quantity,
+                holdingAmount: holding.quantity.toFixed(2),
                 holdings: allHoldings,
                 sessionId: sessId,
               });
@@ -245,7 +245,7 @@ router.get("/dashboard", ensureAuthenticated, async (req, res) => {
                     quotes: quotes,
                     marketState: quotes[0].marketState,
                     user: req.user,
-                    holdingAmount: holding.quantity,
+                    holdingAmount: holding.quantity.toFixed(2),
                     holdings: allHoldings,
                     sessionId: sessId,
                   });
