@@ -150,7 +150,7 @@ const server = app.listen(port, () => {
 //-*-*-*-*-*-*-*-* Database Bulk Operation Temporary Code *-*-*-*-*-*-*-*
 
 // try {
-//   Trade.deleteMany({ tradedBy: "612611a2374368001616c4b0" }, function (err) {
+//   Holding.deleteMany({ heldBy: "613b70d39db3b600119ca340" }, function (err) {
 //     if (err) console.log(err);
 //     console.log("Successful deletion");
 //   });
