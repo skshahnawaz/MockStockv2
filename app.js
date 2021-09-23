@@ -441,4 +441,4 @@ setInterval(async function () {
   // });
   // io.emit("update prices", { quoteList: quotes });
   // console.log(quotes);
-}, 1000);
+}, 2000);
